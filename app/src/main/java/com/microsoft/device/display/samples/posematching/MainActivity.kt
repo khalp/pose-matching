@@ -15,6 +15,7 @@ import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoRepository
 import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
 import com.microsoft.device.display.samples.posematching.fragments.CameraFragment
+import com.microsoft.device.display.samples.posematching.fragments.PoseTestFragment
 import com.microsoft.device.display.samples.posematching.fragments.ReferenceFragment
 import com.microsoft.device.display.samples.posematching.utils.Defines
 import kotlinx.coroutines.Dispatchers
@@ -80,7 +81,7 @@ class MainActivity : AppCompatActivity() {
         // place fragments in view
         if (!supportFragmentManager.isDestroyed) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.primary_fragment_container, ReferenceFragment.newInstance())
+                .replace(R.id.primary_fragment_container, PoseTestFragment.newInstance())
                 .commit()
             supportFragmentManager.beginTransaction()
                 .replace(R.id.secondary_fragment_container, CameraFragment.newInstance())
