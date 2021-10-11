@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.google.android.material.button.MaterialButton
 import com.microsoft.device.display.samples.posematching.R
+import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay
 import com.microsoft.device.display.samples.posematching.viewmodels.PoseViewModel
 
 /**
@@ -20,6 +21,7 @@ class PoseTestFragment : Fragment() {
     private val viewModel: PoseViewModel by viewModels()
 
     private lateinit var generateBtn: MaterialButton
+    private lateinit var graphicOverlay: GraphicOverlay
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +35,9 @@ class PoseTestFragment : Fragment() {
             generatePose()
         }
 
+        graphicOverlay = view.findViewById(R.id.graphic_overlay)
+        viewModel.initializeGraphicOverlay(resources, graphicOverlay)
+
         return view
     }
 
@@ -40,7 +45,7 @@ class PoseTestFragment : Fragment() {
      * Analyze an image and generate a pose estimation
      */
     private fun generatePose() {
-        viewModel.analyzeImage(resources)
+        viewModel.analyzeImage(resources, graphicOverlay)
     }
 
     companion object {

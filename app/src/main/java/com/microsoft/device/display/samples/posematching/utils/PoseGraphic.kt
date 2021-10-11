@@ -3,14 +3,18 @@ package com.microsoft.device.display.samples.posematching.utils
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import com.google.common.primitives.Ints
+import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay.Graphic
 import com.google.mlkit.vision.pose.Pose
 import com.google.mlkit.vision.pose.PoseLandmark
 import java.util.*
+import kotlin.math.max
+import kotlin.math.min
 
 
 // Reference: https://github.com/googlesamples/mlkit/blob/master/android/vision-quickstart/app/src/main/java/com/google/mlkit/vision/demo/kotlin/posedetector/PoseGraphic.kt
 /** Draw the detected pose in preview.  */
-private class PoseGraphic internal constructor(
+class PoseGraphic internal constructor(
     overlay: GraphicOverlay,
     private val pose: Pose,
     private val showInFrameLikelihood: Boolean,
@@ -43,9 +47,9 @@ private class PoseGraphic internal constructor(
         rightPaint.color = Color.YELLOW
     }
 
-    override fun draw(canvas: Canvas) {
+    override fun draw(canvas: Canvas?) {
         val landmarks = pose.allPoseLandmarks
-        if (landmarks.isEmpty()) {
+        if (landmarks.isEmpty() || canvas == null) {
             return
         }
 
@@ -67,8 +71,8 @@ private class PoseGraphic internal constructor(
         for (landmark in landmarks) {
             drawPoint(canvas, landmark, whitePaint)
             if (visualizeZ && rescaleZForVisualization) {
-                zMin = java.lang.Float.min(zMin, landmark.position3D.z)
-                zMax = java.lang.Float.max(zMax, landmark.position3D.z)
+                zMin = min(zMin, landmark.position3D.z)
+                zMax = max(zMax, landmark.position3D.z)
             }
         }
 
@@ -204,8 +208,8 @@ private class PoseGraphic internal constructor(
         val zUpperBoundInScreenPixel: Float
 
         if (rescaleZForVisualization) {
-            zLowerBoundInScreenPixel = java.lang.Float.min(-0.001f, scale(zMin))
-            zUpperBoundInScreenPixel = java.lang.Float.max(0.001f, scale(zMax))
+            zLowerBoundInScreenPixel = min(-0.001f, scale(zMin))
+            zUpperBoundInScreenPixel = max(0.001f, scale(zMax))
         } else {
             // By default, assume the range of z value in screen pixel is [-canvasWidth, canvasWidth].
             val defaultRangeFactor = 1f
