@@ -3,7 +3,6 @@ package com.microsoft.device.display.samples.posematching
 import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -52,7 +51,8 @@ class MainActivity : AppCompatActivity() {
                                 if (isHingeVertical) hingeBounds.width() else hingeBounds.height()
                         }
                     }
-                    val smallestScreenWidthDp = applicationContext.resources.configuration.smallestScreenWidthDp
+                    val smallestScreenWidthDp =
+                        applicationContext.resources.configuration.smallestScreenWidthDp
                     isTablet = smallestScreenWidthDp > Defines.SMALLEST_TABLET_SCREEN_WIDTH_DP
                     isDualScreen = isAppSpanned || isTablet
 
@@ -80,11 +80,14 @@ class MainActivity : AppCompatActivity() {
         // place fragments in view
         if (!supportFragmentManager.isDestroyed) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.secondary_fragment_container, ReferenceFragment.newInstance())
-                .replace(R.id.primary_fragment_container, CameraFragment.newInstance())
+                .replace(R.id.primary_fragment_container, ReferenceFragment.newInstance())
+                .commit()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.secondary_fragment_container, CameraFragment.newInstance())
                 .commit()
         }
     }
+
 
     // -------------------------- Window Manager Section --------------------------- \\
 
