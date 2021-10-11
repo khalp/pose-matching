@@ -52,16 +52,25 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.6.0'
     implementation 'androidx.appcompat:appcompat:1.3.1'
+
     implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.activity:activity-compose:1.3.1'
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
-    implementation 'androidx.activity:activity-compose:1.3.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-alpha03'
     implementation 'androidx.window:window:1.0.0-beta02'
     implementation 'com.microsoft.device.dualscreen:twopanelayout:1.0.0-alpha08'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-rc01'
+
+    // If you want to use the base sdk
+    implementation 'com.google.mlkit:pose-detection:17.0.1-beta6'
+    // If you want to use the accurate sdk
+    implementation 'com.google.mlkit:pose-detection-accurate:17.0.1-beta6'
+
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
