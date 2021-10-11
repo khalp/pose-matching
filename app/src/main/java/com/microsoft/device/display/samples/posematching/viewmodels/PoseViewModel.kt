@@ -3,15 +3,22 @@ package com.microsoft.device.display.samples.posematching.viewmodels
 import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.util.Log
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.pose.Pose
 import com.google.mlkit.vision.pose.PoseDetection
 import com.google.mlkit.vision.pose.PoseDetector
 import com.google.mlkit.vision.pose.PoseLandmark
 import com.google.mlkit.vision.pose.defaults.PoseDetectorOptions
 import com.microsoft.device.display.samples.posematching.R
+import java.lang.Float.max
+import java.lang.Float.min
+import java.util.*
 
 class PoseViewModel : ViewModel() {
     private val poseDetector: PoseDetector
@@ -47,3 +54,4 @@ class PoseViewModel : ViewModel() {
             }
     }
 }
+
