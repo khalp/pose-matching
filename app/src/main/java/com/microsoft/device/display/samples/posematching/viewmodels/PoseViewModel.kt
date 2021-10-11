@@ -2,12 +2,14 @@ package com.microsoft.device.display.samples.posematching.viewmodels
 
 import android.content.res.Resources
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.pose.PoseDetection
 import com.google.mlkit.vision.pose.PoseDetector
+import com.google.mlkit.vision.pose.PoseLandmark
 import com.google.mlkit.vision.pose.defaults.PoseDetectorOptions
 import com.microsoft.device.display.samples.posematching.R
 
@@ -31,10 +33,17 @@ class PoseViewModel : ViewModel() {
             .addOnSuccessListener { results ->
                 // Task completed successfully
                 // ...
+                for(landmark in results.allPoseLandmarks) {
+                    Log.d("PoseTest", "Confidence ${landmark.inFrameLikelihood}, Position ${landmark.position}" +
+                            ", Type ${landmark.landmarkType}")
+                }
+
+                Log.d("PoseTest", "Success!")
             }
             .addOnFailureListener { e ->
                 // Task failed with an exception
                 // ...
+                Log.d("PoseTest", "Boo, failure")
             }
     }
 }
