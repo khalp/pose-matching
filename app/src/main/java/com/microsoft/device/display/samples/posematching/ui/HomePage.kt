@@ -12,10 +12,10 @@ import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoRepository
 import com.microsoft.device.display.samples.posematching.ui.view.CameraView
 import com.microsoft.device.display.samples.posematching.ui.view.ReferenceView
+import com.microsoft.device.display.samples.posematching.utils.Defines
 import com.microsoft.device.dualscreen.twopanelayout.TwoPaneLayout
 import kotlinx.coroutines.flow.collect
 
-const val SMALLEST_TABLET_SCREEN_WIDTH_DP = 585
 
 
 @Composable
@@ -42,7 +42,7 @@ fun Home(windowInfoRepo: WindowInfoRepository) {
     }
 
     val smallestScreenWidthDp = LocalConfiguration.current.smallestScreenWidthDp
-    val isTablet = smallestScreenWidthDp > SMALLEST_TABLET_SCREEN_WIDTH_DP
+    val isTablet = smallestScreenWidthDp > Defines.SMALLEST_TABLET_SCREEN_WIDTH_DP
     val isDualScreen = (isAppSpanned || isTablet)
     val isDualPortrait = when {
         isAppSpanned -> isHingeVertical
