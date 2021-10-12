@@ -1,11 +1,21 @@
 package com.microsoft.device.display.samples.posematching.fragments
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import com.google.android.material.button.MaterialButton
 import com.microsoft.device.display.samples.posematching.R
+import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay
+import com.microsoft.device.display.samples.posematching.viewmodels.ReferenceViewModel
 
 /**
  * A simple [Fragment] subclass.
@@ -13,13 +23,57 @@ import com.microsoft.device.display.samples.posematching.R
  * create an instance of this fragment.
  */
 class ReferenceFragment : Fragment() {
+
+    private val viewModel: ReferenceViewModel by activityViewModels()
+
+    private lateinit var referenceImage: ImageView
+    private lateinit var graphicOverlay: GraphicOverlay
+    private lateinit var pickImageButton: MaterialButton
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_reference, container, false)
+        val view =  inflater.inflate(R.layout.fragment_reference, container, false)
+
+        referenceImage = view.findViewById(R.id.reference_image)
+        graphicOverlay = view.findViewById(R.id.reference_graphic_overlay)
+        pickImageButton = view.findViewById(R.id.pick_image_button)
+
+        pickImageButton.setOnClickListener {
+            openGallery()
+        }
+
+        initializeObservers()
+
+        return view
     }
+
+    private fun initializeObservers() {
+        viewModel.imageUri.observe(viewLifecycleOwner, { uri ->
+            referenceImage.setImageURI(uri)
+        })
+    }
+
+    /**
+     * Send an intent for the user to pick an image from the device's gallery
+     */
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+        getResult.launch(intent)
+    }
+
+    private val getResult =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                it.data?.data?.let { imageUri ->
+                    viewModel.setImageUri(imageUri)
+                }
+            }
+        }
 
     companion object {
         @JvmStatic
