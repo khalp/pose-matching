@@ -34,7 +34,7 @@ class PoseTestFragment : Fragment() {
 
         generateBtn = view.findViewById(R.id.generate_button)
         generateBtn.setOnClickListener {
-            generatePose()
+            //generatePose()
         }
 
         graphicOverlay = view.findViewById(R.id.graphic_overlay)
@@ -47,9 +47,9 @@ class PoseTestFragment : Fragment() {
     /**
      * Analyze an image and generate a pose estimation
      */
-    private fun generatePose() {
-        viewModel.analyzeImage(resources, graphicOverlay)
-    }
+//    private fun generatePose() {
+//        viewModel.analyzeImage(resources, graphicOverlay)
+//    }
 
     companion object {
         @JvmStatic
