@@ -135,7 +135,15 @@ class CameraFragment : Fragment() {
                     Log.d(TAG, msg)
                     val image = InputImage.fromFilePath(requireContext(), savedUri)
                     viewModel.initializeGraphicOverlay(resources, graphicOverlay, image, true)
-                    viewModel.analyzeImage(resources, graphicOverlay, image)
+                    val matching = viewModel.analyzeImage(resources, graphicOverlay, image)
+                    val message =
+                        if (matching) getString(R.string.poses_match) else getString(R.string.poses_dont_match)
+
+                    Toast.makeText(
+                        requireContext(),
+                        message,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
     }
