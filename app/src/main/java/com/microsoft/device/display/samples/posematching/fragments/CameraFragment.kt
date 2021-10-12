@@ -2,7 +2,9 @@ package com.microsoft.device.display.samples.posematching.fragments
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Matrix
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,18 +13,24 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import com.google.mlkit.vision.common.InputImage
 import com.microsoft.device.display.samples.posematching.R
+import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay
+import com.microsoft.device.display.samples.posematching.utils.PoseGraphic
+import com.microsoft.device.display.samples.posematching.viewmodels.PoseViewModel
 import java.io.File
-import java.util.*
+import java.util.ArrayList
+import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -32,6 +40,8 @@ class CameraFragment : Fragment() {
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var previewView: PreviewView
+    private lateinit var graphicOverlay: GraphicOverlay
+    private val viewModel: PoseViewModel by viewModels()
 
     companion object {
         @JvmStatic
@@ -67,6 +77,7 @@ class CameraFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_camera, container, false)
         previewView = view.findViewById(R.id.previewView)
+        graphicOverlay = view.findViewById(R.id.graphic_overlay)
 
         // CameraX reference: https://developer.android.com/codelabs/camerax-getting-started#0
         // Request camera permissions
@@ -110,11 +121,15 @@ class CameraFragment : Fragment() {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
 
+                @RequiresApi(Build.VERSION_CODES.S)
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = Uri.fromFile(photoFile)
                     val msg = getString(R.string.photo_capture_success, savedUri.toString())
                     Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
+                    val image = InputImage.fromFilePath(requireContext(), savedUri)
+                    viewModel.initializeGraphicOverlay(resources, graphicOverlay, image, true)
+                    viewModel.analyzeImage(resources, graphicOverlay, image)
                 }
             })
     }

@@ -23,4 +23,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <com.microsoft.device.display.samples.posematching.utils.GraphicOverlay
+            android:id="@+id/graphic_overlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="@id/previewView"
+            app:layout_constraintEnd_toEndOf="@id/previewView"
+            app:layout_constraintStart_toStartOf="@id/previewView"
+            app:layout_constraintTop_toTopOf="@id/previewView" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
