@@ -1,12 +1,13 @@
 package com.microsoft.device.display.samples.posematching.fragments
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
@@ -25,11 +27,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.mlkit.vision.common.InputImage
 import com.microsoft.device.display.samples.posematching.R
+import com.microsoft.device.display.samples.posematching.utils.CameraImageAnalyzer
 import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay
-import com.microsoft.device.display.samples.posematching.utils.PoseGraphic
 import com.microsoft.device.display.samples.posematching.viewmodels.PoseViewModel
 import java.io.File
-import java.util.ArrayList
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -37,6 +38,7 @@ import java.util.concurrent.Executors
 
 class CameraFragment : Fragment() {
     private var imageCapture: ImageCapture? = null
+    private var imageAnalysis: ImageAnalysis? = null
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var previewView: PreviewView
@@ -79,6 +81,18 @@ class CameraFragment : Fragment() {
         previewView = view.findViewById(R.id.previewView)
         graphicOverlay = view.findViewById(R.id.graphic_overlay)
 
+        // Set up the listener for take photo button
+        view.findViewById<Button>(R.id.camera_capture_button).setOnClickListener { takeVideoSnapshot() }
+
+        outputDirectory = getOutputDirectory()
+        cameraExecutor = Executors.newSingleThreadExecutor()
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         // CameraX reference: https://developer.android.com/codelabs/camerax-getting-started#0
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -86,14 +100,6 @@ class CameraFragment : Fragment() {
         } else {
             permissionsReq.launch(REQUIRED_PERMISSIONS)
         }
-
-        // Set up the listener for take photo button
-        view.findViewById<Button>(R.id.camera_capture_button).setOnClickListener { takePhoto() }
-
-        outputDirectory = getOutputDirectory()
-        cameraExecutor = Executors.newSingleThreadExecutor()
-
-        return view
     }
 
     private fun takePhoto() {
@@ -134,6 +140,11 @@ class CameraFragment : Fragment() {
             })
     }
 
+    private fun takeVideoSnapshot() {
+        viewModel.screenshot = true
+    }
+
+    @SuppressLint("UnsafeOptInUsageError")
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
@@ -148,8 +159,18 @@ class CameraFragment : Fragment() {
                     it.setSurfaceProvider(previewView.surfaceProvider)
                 }
 
+            graphicOverlay.setImageSourceInfo(previewView.width, previewView.height, true)
+
             imageCapture = ImageCapture.Builder()
                 .build()
+
+            imageAnalysis = ImageAnalysis.Builder()
+                .setTargetResolution(Size(previewView.height, previewView.width))
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+                .also {
+                    it.setAnalyzer(cameraExecutor, CameraImageAnalyzer(requireContext(), graphicOverlay, viewModel))
+                }
 
             // Select front camera as a default
             val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
@@ -160,7 +181,7 @@ class CameraFragment : Fragment() {
 
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture
+                    this, cameraSelector, preview, imageCapture, imageAnalysis
                 )
 
             } catch (exc: Exception) {
