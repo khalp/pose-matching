@@ -2,11 +2,8 @@ package com.microsoft.device.display.samples.posematching.viewmodels
 
 import android.content.res.Resources
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.util.Log
-import androidx.annotation.DrawableRes
 import androidx.camera.core.ImageProxy
-import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.lifecycle.ViewModel
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.pose.PoseDetection
