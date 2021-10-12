@@ -3,7 +3,6 @@ package com.microsoft.device.display.samples.posematching.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -26,16 +25,12 @@ import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LifecycleOwner
 import com.google.mlkit.vision.common.InputImage
 import com.microsoft.device.display.samples.posematching.R
 import com.microsoft.device.display.samples.posematching.utils.CameraImageAnalyzer
 import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay
-import com.microsoft.device.display.samples.posematching.utils.PoseGraphic
 import com.microsoft.device.display.samples.posematching.viewmodels.PoseViewModel
-import kotlinx.android.synthetic.main.fragment_camera.*
 import java.io.File
-import java.util.ArrayList
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -170,7 +165,7 @@ class CameraFragment : Fragment() {
                 .build()
 
             imageAnalysis = ImageAnalysis.Builder()
-                .setTargetResolution(Size(graphic_overlay.imageWidth, graphicOverlay.imageHeight))
+                .setTargetResolution(Size(previewView.height, previewView.width))
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
                 .also {
