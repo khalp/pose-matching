@@ -3,15 +3,18 @@ package com.microsoft.device.display.samples.posematching.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -78,7 +81,7 @@ class CameraFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_camera, container, false)
-        previewView = view.findViewById(R.id.previewView)
+        previewView = view.findViewById(R.id.preview_view)
         graphicOverlay = view.findViewById(R.id.graphic_overlay)
 
         // Set up the listener for take photo button
@@ -100,6 +103,33 @@ class CameraFragment : Fragment() {
         } else {
             permissionsReq.launch(REQUIRED_PERMISSIONS)
         }
+
+        // Set up the listener for take photo button
+        val textField = view.findViewById<TextView>(R.id.countdown_text)
+        view.findViewById<Button>(R.id.camera_capture_button).setOnClickListener {
+            object : CountDownTimer(3000, 1000) {
+
+                override fun onTick(millisUntilFinished: Long) {
+                    val remainingSeconds = millisUntilFinished / 1000
+                    textField.text = if (remainingSeconds > 0)
+                        "" + (remainingSeconds + 1)
+                    else
+                        "POSE"
+                    textField.textSize = 70f
+                    textField.typeface = Typeface.DEFAULT_BOLD
+                }
+
+                override fun onFinish() {
+                    textField.text = ""
+                    takePhoto()
+                }
+            }.start()
+        }
+
+        outputDirectory = getOutputDirectory()
+        cameraExecutor = Executors.newSingleThreadExecutor()
+
+        return view
     }
 
     private fun takePhoto() {
@@ -131,19 +161,18 @@ class CameraFragment : Fragment() {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = Uri.fromFile(photoFile)
                     val msg = getString(R.string.photo_capture_success, savedUri.toString())
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
+
                     val image = InputImage.fromFilePath(requireContext(), savedUri)
                     viewModel.initializeGraphicOverlay(resources, graphicOverlay, image, true)
-                    val matching = viewModel.analyzeImage(resources, graphicOverlay, image)
-                    val message =
-                        if (matching) getString(R.string.poses_match) else getString(R.string.poses_dont_match)
-
-                    Toast.makeText(
-                        requireContext(),
-                        message,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    viewModel.analyzeImage(
+                        resources,
+                        graphicOverlay,
+                        image,
+                        { showMessage(getString(R.string.poses_match)) },
+                        { showMessage(getString(R.string.poses_dont_match)) }
+                    )
                 }
             })
     }
@@ -153,6 +182,14 @@ class CameraFragment : Fragment() {
     }
 
     @SuppressLint("UnsafeOptInUsageError")
+    private fun showMessage(msg: String) {
+        Toast.makeText(
+            requireContext(),
+            msg,
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 

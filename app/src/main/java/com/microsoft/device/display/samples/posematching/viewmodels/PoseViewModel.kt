@@ -43,14 +43,17 @@ class PoseViewModel : ViewModel() {
         graphicOverlay.setImageSourceInfo(image.width, image.height, isFlipped = isImageFlipped)
     }
 
-    fun analyzeImage(resources: Resources, graphicOverlay: GraphicOverlay, image: InputImage = InputImage.fromBitmap(
-        BitmapFactory.decodeResource(resources, R.drawable.bill),
-        0),
-        imageProxy: ImageProxy? = null
-    ): Boolean {
-        var returnVal = false
-
-
+    fun analyzeImage(
+        resources: Resources,
+        graphicOverlay: GraphicOverlay,
+        image: InputImage = InputImage.fromBitmap(
+            BitmapFactory.decodeResource(resources, R.drawable.bill),
+            0
+        ),
+        imageProxy: ImageProxy? = null,
+        onMatchSuccess: () -> Unit = {},
+        onMatchFail: () -> Unit = {},
+    ) {
         // REVISIT: actually take from reference frag
         poseDetector.process(
             InputImage.fromBitmap(
@@ -92,7 +95,9 @@ class PoseViewModel : ViewModel() {
 
                 if (comparePoses(referencePose, results)) {
                     Log.d("PoseTest", "Poses match!")
-                    returnVal = true
+                    onMatchSuccess()
+                } else {
+                    onMatchFail()
                 }
             }
             .addOnFailureListener { e ->
@@ -101,7 +106,6 @@ class PoseViewModel : ViewModel() {
                 Log.d("PoseTest", "Boo, failure", e)
                 imageProxy?.close()
             }
-        return returnVal
     }
 }
 
