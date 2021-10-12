@@ -10,4 +10,6 @@
     <string name="spanned_welcome_string2">Welcome! Now that you spanned you can play the game and stuff</string>
     <string name="reference_welcome_string2">Choose a reference image to begin the game!</string>
     <string name="start_game">Start Game</string>
+    <string name="poses_match">Poses match, great job!</string>
+    <string name="poses_dont_match">Poses don\'t match, try again :)</string>
 </resources>
