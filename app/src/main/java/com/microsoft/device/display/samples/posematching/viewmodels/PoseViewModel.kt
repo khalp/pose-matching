@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.util.Log
 import androidx.annotation.DrawableRes
+import androidx.camera.core.ImageProxy
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.lifecycle.ViewModel
 import com.google.mlkit.vision.common.InputImage
@@ -18,6 +19,7 @@ import java.util.*
 
 class PoseViewModel : ViewModel() {
     private val poseDetector: PoseDetector
+    var screenshot = false
 
     init {
         val options = PoseDetectorOptions.Builder()
@@ -44,7 +46,8 @@ class PoseViewModel : ViewModel() {
     fun analyzeImage(resources: Resources, graphicOverlay: GraphicOverlay, image: InputImage = InputImage.fromBitmap(
         BitmapFactory.decodeResource(resources, R.drawable.bill),
         0
-    )) {
+    ), imageProxy: ImageProxy? = null
+    ) {
         poseDetector.process(image)
             .addOnSuccessListener { results ->
                 // Task completed successfully
@@ -72,11 +75,13 @@ class PoseViewModel : ViewModel() {
                 }
 
                 Log.d("PoseTest", "Success!")
+                imageProxy?.close()
             }
             .addOnFailureListener { e ->
                 // Task failed with an exception
                 // ...
-                Log.d("PoseTest", "Boo, failure")
+                Log.d("PoseTest", "Boo, failure", e)
+                imageProxy?.close()
             }
     }
 }

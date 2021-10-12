@@ -67,8 +67,6 @@ dependencies {
 
     // If you want to use the base sdk
     implementation 'com.google.mlkit:pose-detection:17.0.1-beta6'
-    // If you want to use the accurate sdk
-    implementation 'com.google.mlkit:pose-detection-accurate:17.0.1-beta6'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.13.2'
