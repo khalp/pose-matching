@@ -2,7 +2,10 @@ package com.microsoft.device.display.samples.posematching.viewmodels
 
 import android.content.res.Resources
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.util.Log
+import androidx.annotation.DrawableRes
+import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.lifecycle.ViewModel
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.pose.PoseDetection
@@ -24,19 +27,24 @@ class PoseViewModel : ViewModel() {
         poseDetector = PoseDetection.getClient(options)
     }
 
-    fun initializeGraphicOverlay(resources: Resources, graphicOverlay: GraphicOverlay) {
-        val rotationDegrees = 0
-        val image = InputImage.fromBitmap(BitmapFactory.decodeResource(resources, R.drawable.bill),
-            rotationDegrees)
-
-        graphicOverlay.setImageSourceInfo(image.width, image.height, isFlipped = false)
+    fun initializeGraphicOverlay(
+        resources: Resources,
+        graphicOverlay: GraphicOverlay,
+        image: InputImage = InputImage.fromBitmap(
+            BitmapFactory.decodeResource(
+                resources,
+                R.drawable.bill
+            ), 0
+        ),
+        isImageFlipped: Boolean = false,
+    ) {
+        graphicOverlay.setImageSourceInfo(image.width, image.height, isFlipped = isImageFlipped)
     }
 
-    fun analyzeImage(resources: Resources, graphicOverlay: GraphicOverlay) {
-        val rotationDegrees = 0
-        val image = InputImage.fromBitmap(BitmapFactory.decodeResource(resources, R.drawable.bill),
-            rotationDegrees)
-
+    fun analyzeImage(resources: Resources, graphicOverlay: GraphicOverlay, image: InputImage = InputImage.fromBitmap(
+        BitmapFactory.decodeResource(resources, R.drawable.bill),
+        0
+    )) {
         val result = poseDetector.process(image)
             .addOnSuccessListener { results ->
                 // Task completed successfully
@@ -54,9 +62,12 @@ class PoseViewModel : ViewModel() {
 
                 graphicOverlay.invalidate()
 
-                for(landmark in results.allPoseLandmarks) {
-                    Log.d("PoseTest", "Confidence ${landmark.inFrameLikelihood}, Position ${landmark.position}" +
-                            ", Type ${landmark.landmarkType}")
+                for (landmark in results.allPoseLandmarks) {
+                    Log.d(
+                        "PoseTest",
+                        "Confidence ${landmark.inFrameLikelihood}, Position ${landmark.position}" +
+                                ", Type ${landmark.landmarkType}"
+                    )
                 }
 
                 Log.d("PoseTest", "Success!")

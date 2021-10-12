@@ -1,10 +1,12 @@
 package com.microsoft.device.display.samples.posematching.fragments
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import com.google.android.material.button.MaterialButton
 import com.microsoft.device.display.samples.posematching.R
@@ -36,6 +38,7 @@ class PoseTestFragment : Fragment() {
         }
 
         graphicOverlay = view.findViewById(R.id.graphic_overlay)
+        graphicOverlay.background = ContextCompat.getDrawable(requireContext(), R.drawable.bill)
         viewModel.initializeGraphicOverlay(resources, graphicOverlay)
 
         return view
