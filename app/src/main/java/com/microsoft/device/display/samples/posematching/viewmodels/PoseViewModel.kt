@@ -45,10 +45,11 @@ class PoseViewModel : ViewModel() {
         BitmapFactory.decodeResource(resources, R.drawable.bill),
         0
     )) {
-        val result = poseDetector.process(image)
+        poseDetector.process(image)
             .addOnSuccessListener { results ->
                 // Task completed successfully
                 // ...
+                graphicOverlay.clear()
                 graphicOverlay.add(
                     PoseGraphic(
                         graphicOverlay,
