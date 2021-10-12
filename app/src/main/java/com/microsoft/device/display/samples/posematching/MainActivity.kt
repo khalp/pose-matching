@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
         // place fragments in view
         if (!supportFragmentManager.isDestroyed) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.primary_fragment_container, PoseTestFragment.newInstance())
+                .replace(R.id.primary_fragment_container, ReferenceFragment.newInstance())
                 .commit()
             supportFragmentManager.beginTransaction()
                 .replace(R.id.secondary_fragment_container, CameraFragment.newInstance())
