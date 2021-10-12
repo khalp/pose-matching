@@ -45,7 +45,7 @@ private fun compareKneeAngles(reference: Pose, toCompare: Pose): Boolean {
     return left && right
 }
 
-private fun compareAngle(first: Double, second: Double, threshold: Float = 10f): Boolean {
+private fun compareAngle(first: Double, second: Double, threshold: Float = 30f): Boolean {
     val returnVal = abs(first - second) < threshold
     Log.d("PoseComparator", "Reference: $first Attempt: $second Matching? $returnVal")
     return returnVal
