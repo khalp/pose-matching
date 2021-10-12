@@ -27,12 +27,14 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.google.mlkit.vision.common.InputImage
 import com.microsoft.device.display.samples.posematching.R
 import com.microsoft.device.display.samples.posematching.utils.CameraImageAnalyzer
 import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay
 import com.microsoft.device.display.samples.posematching.viewmodels.PoseViewModel
+import com.microsoft.device.display.samples.posematching.viewmodels.ReferenceViewModel
 import java.io.File
 import java.util.Locale
 import java.util.concurrent.ExecutorService
@@ -46,7 +48,8 @@ class CameraFragment : Fragment() {
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var previewView: PreviewView
     private lateinit var graphicOverlay: GraphicOverlay
-    private val viewModel: PoseViewModel by viewModels()
+    private val poseViewModel: PoseViewModel by viewModels()
+    private val referenceViewModel: ReferenceViewModel by activityViewModels()
 
     companion object {
         @JvmStatic
@@ -165,9 +168,11 @@ class CameraFragment : Fragment() {
                     Log.d(TAG, msg)
 
                     val image = InputImage.fromFilePath(requireContext(), savedUri)
-                    viewModel.initializeGraphicOverlay(resources, graphicOverlay, image, true)
-                    viewModel.analyzeImage(
+                    poseViewModel.initializeGraphicOverlay(resources, graphicOverlay, image, true)
+                    poseViewModel.analyzeImage(
                         resources,
+                        requireContext(),
+                        referenceViewModel.imageUri.value!!,
                         graphicOverlay,
                         image,
                         { showMessage(getString(R.string.poses_match)) },

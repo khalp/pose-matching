@@ -1,7 +1,9 @@
 package com.microsoft.device.display.samples.posematching.viewmodels
 
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Log
 import androidx.camera.core.ImageProxy
 import androidx.lifecycle.ViewModel
@@ -45,6 +47,8 @@ class PoseViewModel : ViewModel() {
 
     fun analyzeImage(
         resources: Resources,
+        context: Context,
+        referenceUri: Uri,
         graphicOverlay: GraphicOverlay,
         image: InputImage = InputImage.fromBitmap(
             BitmapFactory.decodeResource(resources, R.drawable.bill),
@@ -56,12 +60,7 @@ class PoseViewModel : ViewModel() {
     ) {
         // REVISIT: actually take from reference frag
         poseDetector.process(
-            InputImage.fromBitmap(
-                BitmapFactory.decodeResource(
-                    resources,
-                    R.drawable.bill
-                ), 0
-            )
+            InputImage.fromFilePath(context, referenceUri)
         ).addOnSuccessListener { referencePose = it }
 
         poseDetector.process(image)
@@ -93,7 +92,7 @@ class PoseViewModel : ViewModel() {
                 Log.d("PoseTest", "Success!")
                 imageProxy?.close()
 
-                if (comparePoses(referencePose, results)) {
+                if (comparePoses(false, false, false, false, referencePose, results)) {
                     Log.d("PoseTest", "Poses match!")
                     onMatchSuccess()
                 } else {

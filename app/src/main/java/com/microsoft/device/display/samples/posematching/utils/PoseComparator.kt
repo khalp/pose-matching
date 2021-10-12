@@ -9,40 +9,146 @@ import kotlin.math.atan2
 // Reference: https://developers.google.com/ml-kit/vision/pose-detection/classifying-poses#expandable-1
 
 // REVISIT: add checks to "in frame likelihood?" can add warnings like "make sure you're in frame"
+private const val inFrameThreshold = 0.8f
 
-fun comparePoses(reference: Pose, toCompare: Pose): Boolean {
-    return compareElbowAngles(reference, toCompare)
-            && compareShoulderAngles(reference, toCompare)
-            && compareHipAngles(reference, toCompare)
-            && compareKneeAngles(reference, toCompare)
+
+fun comparePoses(
+    skipElbows: Boolean,
+    skipShoulders: Boolean,
+    skipHips: Boolean,
+    skipKnees: Boolean,
+    reference: Pose,
+    toCompare: Pose
+): Boolean {
+    val elbows = skipElbows || compareElbowAngles(reference, toCompare)
+    val shoulders = skipShoulders || compareShoulderAngles(reference, toCompare)
+    val hips = skipHips || compareHipAngles(reference, toCompare)
+    val knees = skipKnees || compareKneeAngles(reference, toCompare)
+
+    return elbows && shoulders && hips && knees
 }
 
 private fun compareElbowAngles(reference: Pose, toCompare: Pose): Boolean {
-    val left = compareAngle(leftElbowAngle(reference), leftElbowAngle(toCompare))
-    val right = compareAngle(rightElbowAngle(reference), rightElbowAngle(toCompare))
-    Log.d("PoseComparator", "Elbows matching? left: $left right: $right")
-    return left && right
+    val leftLandmarks = listOf(
+        PoseLandmark.LEFT_WRIST,
+        PoseLandmark.LEFT_ELBOW,
+        PoseLandmark.LEFT_SHOULDER
+    )
+    val rightLandmarks = listOf(
+        PoseLandmark.RIGHT_WRIST,
+        PoseLandmark.RIGHT_ELBOW,
+        PoseLandmark.RIGHT_SHOULDER
+    )
+
+    return compareLeftAndRightJointAngles(
+        leftLandmarks,
+        rightLandmarks,
+        reference,
+        toCompare,
+        "elbow"
+    )
 }
 
 private fun compareShoulderAngles(reference: Pose, toCompare: Pose): Boolean {
-    val left = compareAngle(leftShoulderAngle(reference), leftShoulderAngle(toCompare))
-    val right = compareAngle(rightShoulderAngle(reference), rightShoulderAngle(toCompare))
-    Log.d("PoseComparator", "Shoulders matching? left: $left right: $right")
-    return left && right
+    val leftLandmarks = listOf(
+        PoseLandmark.LEFT_ELBOW,
+        PoseLandmark.LEFT_SHOULDER,
+        PoseLandmark.LEFT_HIP
+    )
+    val rightLandmarks = listOf(
+        PoseLandmark.RIGHT_ELBOW,
+        PoseLandmark.RIGHT_SHOULDER,
+        PoseLandmark.RIGHT_HIP
+    )
+
+    return compareLeftAndRightJointAngles(
+        leftLandmarks,
+        rightLandmarks,
+        reference,
+        toCompare,
+        "shoulder"
+    )
 }
 
 private fun compareHipAngles(reference: Pose, toCompare: Pose): Boolean {
-    val left = compareAngle(leftHipAngle(reference), leftHipAngle(toCompare))
-    val right = compareAngle(rightHipAngle(reference), rightHipAngle(toCompare))
-    Log.d("PoseComparator", "Hips matching? left: $left right: $right")
-    return left && right
+    val leftLandmarks = listOf(
+        PoseLandmark.LEFT_SHOULDER,
+        PoseLandmark.LEFT_HIP,
+        PoseLandmark.LEFT_KNEE
+    )
+    val rightLandmarks = listOf(
+        PoseLandmark.RIGHT_SHOULDER,
+        PoseLandmark.RIGHT_HIP,
+        PoseLandmark.RIGHT_KNEE
+    )
+
+    return compareLeftAndRightJointAngles(
+        leftLandmarks,
+        rightLandmarks,
+        reference,
+        toCompare,
+        "hip"
+    )
 }
 
 private fun compareKneeAngles(reference: Pose, toCompare: Pose): Boolean {
-    val left = compareAngle(leftKneeAngle(reference), leftKneeAngle(toCompare))
-    val right = compareAngle(rightKneeAngle(reference), rightKneeAngle(toCompare))
-    Log.d("PoseComparator", "Knees matching? left: $left right: $right")
+    val leftLandmarks = listOf(
+        PoseLandmark.LEFT_ANKLE,
+        PoseLandmark.LEFT_KNEE,
+        PoseLandmark.LEFT_HIP
+    )
+    val rightLandmarks = listOf(
+        PoseLandmark.RIGHT_ANKLE,
+        PoseLandmark.RIGHT_KNEE,
+        PoseLandmark.RIGHT_HIP
+    )
+
+    return compareLeftAndRightJointAngles(
+        leftLandmarks,
+        rightLandmarks,
+        reference,
+        toCompare,
+        "knee"
+    )
+}
+
+private fun compareLeftAndRightJointAngles(
+    leftLandmarks: List<Int>,
+    rightLandmarks: List<Int>,
+    reference: Pose,
+    toCompare: Pose,
+    joint: String
+): Boolean {
+    val left = if (checkJointAnglesInFrame(leftLandmarks, reference))
+        compareJointAngle(leftLandmarks, reference, toCompare)
+    else true
+
+    val right = if (checkJointAnglesInFrame(rightLandmarks, reference))
+        compareJointAngle(rightLandmarks, reference, toCompare)
+    else true
+
+    Log.d("PoseComparator", "${joint}s matching? left: $left right: $right")
     return left && right
+}
+
+private fun checkJointAnglesInFrame(landmarks: List<Int>, reference: Pose): Boolean {
+    var inFrame = true
+    for (landmark in landmarks) {
+        val landmarkInFrame = isInFrame(reference, landmark)
+        inFrame = inFrame && landmarkInFrame
+        Log.d("Pose Comparator", "landmark: $landmark in frame? $landmarkInFrame")
+    }
+    Log.d("Pose Comparator", "overall joint in frame? $inFrame")
+    return inFrame
+}
+
+private fun isInFrame(pose: Pose, landmark: Int): Boolean {
+    return pose.getPoseLandmark(landmark)!!.inFrameLikelihood >= inFrameThreshold
+}
+
+private fun compareJointAngle(landmarks: List<Int>, reference: Pose, toCompare: Pose): Boolean {
+    check(landmarks.size == 3) { "Invalid landmark array size ${landmarks.size}, should be 3" }
+    return compareAngle(getJointAngle(reference, landmarks), getJointAngle(toCompare, landmarks))
 }
 
 private fun compareAngle(first: Double, second: Double, threshold: Float = 30f): Boolean {
@@ -51,83 +157,12 @@ private fun compareAngle(first: Double, second: Double, threshold: Float = 30f):
     return returnVal
 }
 
-private fun leftKneeAngle(pose: Pose): Double {
-    return getPoseAngle(
-        pose,
-        PoseLandmark.LEFT_ANKLE,
-        PoseLandmark.LEFT_KNEE,
-        PoseLandmark.LEFT_HIP
-    )
-}
-
-private fun rightKneeAngle(pose: Pose): Double {
-    return getPoseAngle(
-        pose,
-        PoseLandmark.RIGHT_ANKLE,
-        PoseLandmark.RIGHT_KNEE,
-        PoseLandmark.RIGHT_HIP
-    )
-}
-
-private fun leftElbowAngle(pose: Pose): Double {
-    return getPoseAngle(
-        pose,
-        PoseLandmark.LEFT_WRIST,
-        PoseLandmark.LEFT_ELBOW,
-        PoseLandmark.LEFT_ELBOW
-    )
-}
-
-private fun rightElbowAngle(pose: Pose): Double {
-    return getPoseAngle(
-        pose,
-        PoseLandmark.RIGHT_WRIST,
-        PoseLandmark.RIGHT_ELBOW,
-        PoseLandmark.RIGHT_ELBOW
-    )
-}
-
-private fun leftShoulderAngle(pose: Pose): Double {
-    return getPoseAngle(
-        pose,
-        PoseLandmark.LEFT_ELBOW,
-        PoseLandmark.LEFT_SHOULDER,
-        PoseLandmark.LEFT_HIP
-    )
-}
-
-private fun rightShoulderAngle(pose: Pose): Double {
-    return getPoseAngle(
-        pose,
-        PoseLandmark.RIGHT_ELBOW,
-        PoseLandmark.RIGHT_SHOULDER,
-        PoseLandmark.RIGHT_HIP
-    )
-}
-
-private fun leftHipAngle(pose: Pose): Double {
-    return getPoseAngle(
-        pose,
-        PoseLandmark.LEFT_SHOULDER,
-        PoseLandmark.LEFT_HIP,
-        PoseLandmark.LEFT_KNEE
-    )
-}
-
-private fun rightHipAngle(pose: Pose): Double {
-    return getPoseAngle(
-        pose,
-        PoseLandmark.RIGHT_SHOULDER,
-        PoseLandmark.RIGHT_HIP,
-        PoseLandmark.RIGHT_KNEE
-    )
-}
-
-private fun getPoseAngle(pose: Pose, landmark1: Int, landmark2: Int, landmark3: Int): Double {
+private fun getJointAngle(pose: Pose, landmarks: List<Int>): Double {
+    check(landmarks.size == 3) { "Invalid landmark array size ${landmarks.size}, should be 3" }
     return getAngle(
-        pose.getPoseLandmark(landmark1)!!,
-        pose.getPoseLandmark(landmark2)!!,
-        pose.getPoseLandmark(landmark3)!!
+        pose.getPoseLandmark(landmarks[0])!!,
+        pose.getPoseLandmark(landmarks[1])!!,
+        pose.getPoseLandmark(landmarks[2])!!
     )
 }
 
