@@ -2,7 +2,12 @@ package com.microsoft.device.display.samples.posematching.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+val OrangeMain = Color(0xfffb8c00)
+val OrangeLight = Color(0xffffbd45)
+val OrangeDark = Color(0xffc25e00)
+val BlushMain = Color(0xffffab91)
+val BlushLight = Color(0xffffddc1)
+val BlushDark = Color(0xffc97b63)
+val Black = Color.Black
+val White = Color.White
+val DarkGray = Color(0xff101010)
