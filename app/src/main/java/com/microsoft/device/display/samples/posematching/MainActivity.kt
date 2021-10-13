@@ -17,6 +17,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoRepository
 import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import com.microsoft.device.display.samples.posematching.fragments.CameraFragment
+import com.microsoft.device.display.samples.posematching.fragments.ReferenceFragment
 import com.microsoft.device.display.samples.posematching.utils.Defines
 import com.microsoft.device.display.samples.posematching.viewmodels.GameViewModel
 import kotlinx.coroutines.Dispatchers

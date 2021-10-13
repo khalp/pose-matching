@@ -12,4 +12,5 @@
     <string name="start_game">Start Game</string>
     <string name="poses_match">Poses match, great job!</string>
     <string name="poses_dont_match">Poses don\'t match, try again :)</string>
+    <string name="pose">POSE!</string>
 </resources>

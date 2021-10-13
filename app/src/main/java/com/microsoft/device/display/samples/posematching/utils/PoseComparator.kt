@@ -8,9 +8,9 @@ import kotlin.math.atan2
 
 // Reference: https://developers.google.com/ml-kit/vision/pose-detection/classifying-poses#expandable-1
 
-// REVISIT: add checks to "in frame likelihood?" can add warnings like "make sure you're in frame"
+// thresholds
 private const val inFrameThreshold = 0.8f
-
+private const val angleThreshold = 30f
 
 fun comparePoses(
     skipElbows: Boolean,
@@ -151,7 +151,11 @@ private fun compareJointAngle(landmarks: List<Int>, reference: Pose, toCompare: 
     return compareAngle(getJointAngle(reference, landmarks), getJointAngle(toCompare, landmarks))
 }
 
-private fun compareAngle(first: Double, second: Double, threshold: Float = 30f): Boolean {
+private fun compareAngle(
+    first: Double,
+    second: Double,
+    threshold: Float = angleThreshold
+): Boolean {
     val returnVal = abs(first - second) < threshold
     Log.d("PoseComparator", "Reference: $first Attempt: $second Matching? $returnVal")
     return returnVal
