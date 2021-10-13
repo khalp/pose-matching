@@ -1,6 +1,12 @@
 package com.microsoft.device.display.samples.posematching.utils
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.mlkit.vision.common.InputImage
@@ -23,24 +29,52 @@ class CameraImageAnalyzer(
         return data // Return the byte array
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun analyze(imageProxy: ImageProxy) {
         imageProxy.image?.let { mediaImage ->
             if (viewModel.screenshot) {
-                val refUri = referenceViewModel.imageUri.value
-                refUri?.let { uri ->
-                    val img =
-                        InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
-                    val refImg = InputImage.fromFilePath(context, uri)
-                    viewModel.initializeGraphicOverlay(graphicOverlay, img, true)
-                    viewModel.resetPoses()
-                    viewModel.analyzeImage(
-                        graphicOverlay = graphicOverlay,
-                        referenceImage = refImg,
-                        image = img,
-                        imageProxy = imageProxy
+                // Load the reference image and check if it's flipped
+                val refUri = referenceViewModel.imageUri.value ?: return
+                var inputStream = context.contentResolver.openInputStream(refUri) ?: return
+                val isFlippedHorizontally =
+                    ExifInterface(inputStream).getAttributeInt(
+                        ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_NORMAL
+                    ) == ExifInterface.ORIENTATION_FLIP_HORIZONTAL
+                inputStream.close()
+
+                inputStream = context.contentResolver.openInputStream(refUri) ?: return
+                var bitmap = BitmapFactory.decodeStream(inputStream)
+                inputStream.close()
+                val matrix = Matrix()
+                matrix.postScale(-1f, 1f)
+                if (isFlippedHorizontally) {
+                    bitmap = Bitmap.createBitmap(
+                        bitmap,
+                        0,
+                        0,
+                        bitmap.width,
+                        bitmap.height,
+                        matrix,
+                        false,
                     )
-                    viewModel.screenshot = false
                 }
+
+                // Create InputImages for reference + user photos
+                val refImg = InputImage.fromBitmap(bitmap, 0)
+                val img =
+                    InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+
+                // Draw skeleton over user and analyze the pose matching
+                viewModel.initializeGraphicOverlay(graphicOverlay, img, true)
+                viewModel.resetPoses()
+                viewModel.analyzeImage(
+                    graphicOverlay = graphicOverlay,
+                    referenceImage = refImg,
+                    image = img,
+                    imageProxy = imageProxy
+                )
+                viewModel.screenshot = false
             } else {
                 imageProxy.close()
             }
