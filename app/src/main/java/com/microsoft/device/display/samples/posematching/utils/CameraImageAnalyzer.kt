@@ -68,7 +68,7 @@ class CameraImageAnalyzer(
                 // Draw skeleton over user and analyze the pose matching
                 viewModel.initializeGraphicOverlay(graphicOverlay, img, true)
                 viewModel.resetPoses()
-                viewModel.analyzeImage(
+                viewModel.analyzeAndCompareImages(
                     graphicOverlay = graphicOverlay,
                     referenceImage = refImg,
                     image = img,

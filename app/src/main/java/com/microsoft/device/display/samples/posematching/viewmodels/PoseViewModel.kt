@@ -47,6 +47,17 @@ class PoseViewModel : ViewModel() {
 
     fun analyzeImage(
         graphicOverlay: GraphicOverlay,
+        image: InputImage,
+    ) {
+        poseDetector.process(image)
+            .addOnSuccessListener {
+                userPose = it
+                drawPoses(graphicOverlay, it)
+            }
+    }
+
+    fun analyzeAndCompareImages(
+        graphicOverlay: GraphicOverlay,
         referenceImage: InputImage,
         image: InputImage,
         imageProxy: ImageProxy? = null,
