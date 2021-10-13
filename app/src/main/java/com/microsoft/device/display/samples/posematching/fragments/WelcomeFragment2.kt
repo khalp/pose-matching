@@ -7,19 +7,17 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.microsoft.device.display.samples.posematching.MainActivity
+import androidx.navigation.findNavController
 import com.microsoft.device.display.samples.posematching.R
 import com.microsoft.device.display.samples.posematching.viewmodels.ReferenceViewModel
-import com.microsoft.device.display.samples.posematching.viewmodels.WelcomeViewModel
+import com.microsoft.device.display.samples.posematching.viewmodels.GameViewModel
 
 class WelcomeFragment2 : Fragment() {
 
-    private val viewModel: WelcomeViewModel by activityViewModels()
+    private val viewModel: GameViewModel by activityViewModels()
     private val referenceViewModel: ReferenceViewModel by activityViewModels()
 
     private lateinit var welcomeText: TextView
-
-    private var isAppSpanned = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,12 +30,6 @@ class WelcomeFragment2 : Fragment() {
 
         initializeObservers()
 
-        (requireActivity() as? MainActivity)?.let { isAppSpanned = it.isSpanned }
-
-        if (isAppSpanned) {
-            welcomeText.setText(R.string.spanned_welcome_string2)
-        }
-
         return view
     }
 
@@ -48,12 +40,16 @@ class WelcomeFragment2 : Fragment() {
             }
         })
 
+        viewModel.isDualScreen.observe(viewLifecycleOwner, { isDualScreen ->
+            if (isDualScreen) {
+                welcomeText.setText(R.string.spanned_welcome_string2)
+            }
+        })
+
         referenceViewModel.imageUri.observe(viewLifecycleOwner, { uri ->
             if (uri != null) {
                 // transition to next screen
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.secondary_fragment_container, CameraFragment.newInstance())
-                    .commit()
+                requireView().findNavController().navigate(WelcomeFragment2Directions.actionWelcomeFragment2ToCameraFragment())
             }
         })
     }

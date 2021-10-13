@@ -7,19 +7,18 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
 import com.google.android.material.button.MaterialButton
 import com.microsoft.device.display.samples.posematching.MainActivity
 import com.microsoft.device.display.samples.posematching.R
-import com.microsoft.device.display.samples.posematching.viewmodels.WelcomeViewModel
+import com.microsoft.device.display.samples.posematching.viewmodels.GameViewModel
 
 class WelcomeFragment1 : Fragment() {
 
-    private val viewModel: WelcomeViewModel by activityViewModels()
+    private val viewModel: GameViewModel by activityViewModels()
 
     private lateinit var welcomeText: TextView
     private lateinit var startButton: MaterialButton
-
-    private var isAppSpanned = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,13 +31,6 @@ class WelcomeFragment1 : Fragment() {
         startButton = view.findViewById(R.id.start_button1)
 
         initializeObservers()
-
-        (requireActivity() as? MainActivity)?.let { isAppSpanned = it.isSpanned }
-
-        if (isAppSpanned) {
-            welcomeText.setText(R.string.spanned_welcome_string1)
-            initializeButton(startButton)
-        }
 
         return view
     }
@@ -54,9 +46,14 @@ class WelcomeFragment1 : Fragment() {
         viewModel.gameStarted.observe(viewLifecycleOwner, { started ->
             if (started) {
                 // transition to next screen
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.primary_fragment_container, ReferenceFragment.newInstance())
-                    .commit()
+                requireView().findNavController().navigate(WelcomeFragment1Directions.actionWelcomeFragment1ToReferenceFragment())
+            }
+        })
+
+        viewModel.isDualScreen.observe(viewLifecycleOwner, { isDualScreen ->
+            if (isDualScreen) {
+                welcomeText.setText(R.string.spanned_welcome_string1)
+                initializeButton(startButton)
             }
         })
     }
