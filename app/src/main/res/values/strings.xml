@@ -5,4 +5,9 @@
     <string name="take_photo">Take photo</string>
     <string name="photo_capture_success">Photo capture succeeded: %1$s</string>
     <string name="permissions_not_granted">Permissions not granted by the user</string>
+    <string name="welcome_string1">Welcome! Span to start the game</string>
+    <string name="spanned_welcome_string1">Welcome! Now that you spanned you can play the game and stuff</string>
+    <string name="spanned_welcome_string2">Welcome! Now that you spanned you can play the game and stuff</string>
+    <string name="reference_welcome_string2">Choose a reference image to begin the game!</string>
+    <string name="start_game">Start Game</string>
 </resources>

@@ -5,25 +5,28 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ReactiveGuide
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoRepository
 import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
-import com.microsoft.device.display.samples.posematching.fragments.CameraFragment
-import com.microsoft.device.display.samples.posematching.fragments.PoseTestFragment
-import com.microsoft.device.display.samples.posematching.fragments.ReferenceFragment
 import com.microsoft.device.display.samples.posematching.utils.Defines
+import com.microsoft.device.display.samples.posematching.viewmodels.GameViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
+    private val viewModel: GameViewModel by viewModels()
+
     private lateinit var windowInfoRepo: WindowInfoRepository
     private var isAppSpanned: Boolean = false
     private var isTablet: Boolean = false
@@ -65,6 +68,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupDualscreenUI() {
         // set up bounds according to layout info
+        viewModel.isDualScreen.value = isDualScreen
         if (isDualScreen) {
             val isDualPotrait = (isAppSpanned && isHingeVertical) ||
                     (isTablet && applicationContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
@@ -78,15 +82,15 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        // place fragments in view
+        /*// place fragments in view
         if (!supportFragmentManager.isDestroyed) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.primary_fragment_container, ReferenceFragment.newInstance())
+                .replace(R.id.primary_fragment_container, WelcomeFragment1())
                 .commit()
             supportFragmentManager.beginTransaction()
-                .replace(R.id.secondary_fragment_container, CameraFragment.newInstance())
+                .replace(R.id.secondary_fragment_container, WelcomeFragment2())
                 .commit()
-        }
+        }*/
     }
 
 

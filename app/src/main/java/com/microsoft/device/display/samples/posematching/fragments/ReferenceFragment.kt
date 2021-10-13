@@ -13,8 +13,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.google.android.material.button.MaterialButton
+import com.google.mlkit.vision.common.InputImage
 import com.microsoft.device.display.samples.posematching.R
 import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay
+import com.microsoft.device.display.samples.posematching.viewmodels.PoseViewModel
 import com.microsoft.device.display.samples.posematching.viewmodels.ReferenceViewModel
 
 /**
@@ -25,6 +27,7 @@ import com.microsoft.device.display.samples.posematching.viewmodels.ReferenceVie
 class ReferenceFragment : Fragment() {
 
     private val viewModel: ReferenceViewModel by activityViewModels()
+    private val poseViewModel: PoseViewModel by viewModels()
 
     private lateinit var referenceImage: ImageView
     private lateinit var graphicOverlay: GraphicOverlay
@@ -35,7 +38,7 @@ class ReferenceFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view =  inflater.inflate(R.layout.fragment_reference, container, false)
+        val view = inflater.inflate(R.layout.fragment_reference, container, false)
 
         referenceImage = view.findViewById(R.id.reference_image)
         graphicOverlay = view.findViewById(R.id.reference_graphic_overlay)
@@ -53,6 +56,10 @@ class ReferenceFragment : Fragment() {
     private fun initializeObservers() {
         viewModel.imageUri.observe(viewLifecycleOwner, { uri ->
             referenceImage.setImageURI(uri)
+
+            val img = InputImage.fromFilePath(requireContext(), uri)
+            poseViewModel.initializeGraphicOverlay(resources, graphicOverlay, img, false)
+            poseViewModel.analyzeImage(resources, graphicOverlay, img)
         })
     }
 
