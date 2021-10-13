@@ -38,7 +38,7 @@ class ReferenceFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view =  inflater.inflate(R.layout.fragment_reference, container, false)
+        val view = inflater.inflate(R.layout.fragment_reference, container, false)
 
         referenceImage = view.findViewById(R.id.reference_image)
         graphicOverlay = view.findViewById(R.id.reference_graphic_overlay)
