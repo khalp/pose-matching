@@ -1,9 +1,5 @@
 package com.microsoft.device.display.samples.posematching.viewmodels
 
-import android.content.Context
-import android.content.res.Resources
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.util.Log
 import androidx.camera.core.ImageProxy
 import androidx.lifecycle.ViewModel
@@ -12,16 +8,21 @@ import com.google.mlkit.vision.pose.Pose
 import com.google.mlkit.vision.pose.PoseDetection
 import com.google.mlkit.vision.pose.PoseDetector
 import com.google.mlkit.vision.pose.defaults.PoseDetectorOptions
-import com.microsoft.device.display.samples.posematching.R
 import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay
 import com.microsoft.device.display.samples.posematching.utils.PoseGraphic
 import com.microsoft.device.display.samples.posematching.utils.comparePoses
-import java.util.*
 
 class PoseViewModel : ViewModel() {
-    private val poseDetector: PoseDetector
     var screenshot = false
-    private lateinit var referencePose: Pose
+    private val poseDetector: PoseDetector
+    private var referencePose: Pose? = null
+    private var userPose: Pose? = null
+    private var skipElbows: Boolean = false
+    private var skipShoulders: Boolean = false
+    private var skipKnees: Boolean = false
+    private var skipHips: Boolean = false
+    var onSuccess: () -> Unit = {}
+    var onFail: () -> Unit = {}
 
     init {
         val options = PoseDetectorOptions.Builder()
@@ -32,79 +33,90 @@ class PoseViewModel : ViewModel() {
     }
 
     fun initializeGraphicOverlay(
-        resources: Resources,
         graphicOverlay: GraphicOverlay,
-        image: InputImage = InputImage.fromBitmap(
-            BitmapFactory.decodeResource(
-                resources,
-                R.drawable.bill
-            ), 0
-        ),
+        image: InputImage,
         isImageFlipped: Boolean = false,
     ) {
         graphicOverlay.setImageSourceInfo(image.width, image.height, isFlipped = isImageFlipped)
     }
 
+    fun resetPoses() {
+        referencePose = null
+        userPose = null
+    }
+
     fun analyzeImage(
-        resources: Resources,
-        context: Context,
-        referenceUri: Uri,
         graphicOverlay: GraphicOverlay,
-        image: InputImage = InputImage.fromBitmap(
-            BitmapFactory.decodeResource(resources, R.drawable.bill),
-            0
-        ),
+        referenceImage: InputImage,
+        image: InputImage,
         imageProxy: ImageProxy? = null,
-        onMatchSuccess: () -> Unit = {},
-        onMatchFail: () -> Unit = {},
     ) {
-        // REVISIT: actually take from reference frag
-        poseDetector.process(
-            InputImage.fromFilePath(context, referenceUri)
-        ).addOnSuccessListener { referencePose = it }
+        // Process reference image to get reference pose data
+        poseDetector.process(referenceImage)
+            .addOnSuccessListener {
+                referencePose = it
+                drawAndComparePoses(graphicOverlay)
+            }
 
+        // Process user image to get image pose data
         poseDetector.process(image)
-            .addOnSuccessListener { results ->
-                // Task completed successfully
-                // ...
-                graphicOverlay.clear()
-                graphicOverlay.add(
-                    PoseGraphic(
-                        graphicOverlay,
-                        results,
-                        showInFrameLikelihood = false,
-                        visualizeZ = true,
-                        rescaleZForVisualization = false,
-                        poseClassification = ArrayList()
-                    )
-                )
-
-                graphicOverlay.invalidate()
-
-                for (landmark in results.allPoseLandmarks) {
-                    Log.d(
-                        "PoseTest",
-                        "Confidence ${landmark.inFrameLikelihood}, Position ${landmark.position}" +
-                                ", Type ${landmark.landmarkType}"
-                    )
-                }
-
-                Log.d("PoseTest", "Success!")
+            .addOnSuccessListener {
+                userPose = it
                 imageProxy?.close()
-
-                if (comparePoses(false, false, false, false, referencePose, results)) {
-                    Log.d("PoseTest", "Poses match!")
-                    onMatchSuccess()
-                } else {
-                    onMatchFail()
-                }
+                drawAndComparePoses(graphicOverlay)
             }
             .addOnFailureListener { e ->
-                // Task failed with an exception
-                // ...
                 Log.d("PoseTest", "Boo, failure", e)
                 imageProxy?.close()
             }
+    }
+
+    private fun drawAndComparePoses(graphicOverlay: GraphicOverlay) {
+        // REVISIT: not very async friendly, haven't figured out how to "join" the tasks yet
+        if (referencePose == null || userPose == null)
+            return
+
+        drawPoses(graphicOverlay, userPose!!)
+        if (comparePoses(
+                skipElbows,
+                skipShoulders,
+                skipHips,
+                skipKnees,
+                referencePose!!,
+                userPose!!
+            )
+        ) {
+            onMatchSuccess()
+        } else {
+            onMatchFail()
+        }
+    }
+
+    private fun drawPoses(graphicOverlay: GraphicOverlay, pose: Pose) {
+        graphicOverlay.clear()
+
+        graphicOverlay.add(
+            PoseGraphic(
+                graphicOverlay,
+                pose,
+                showInFrameLikelihood = false,
+                visualizeZ = true,
+                rescaleZForVisualization = false,
+                poseClassification = emptyList()
+            )
+        )
+
+        graphicOverlay.invalidate()
+    }
+
+    private fun onMatchSuccess() {
+        Log.d("PoseTest", "Poses match!")
+        onSuccess()
+    }
+
+    private fun onMatchFail() {
+        Log.d("PoseTest", "Poses don't match, try again :(")
+        onFail()
     }
 }
 
