@@ -1,7 +1,6 @@
 package com.microsoft.device.display.samples.posematching.fragments
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Typeface
 import android.os.Bundle
@@ -32,6 +31,7 @@ import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay
 import com.microsoft.device.display.samples.posematching.viewmodels.PoseViewModel
 import com.microsoft.device.display.samples.posematching.viewmodels.ReferenceViewModel
 import java.io.File
+import java.text.DecimalFormat
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -64,11 +64,7 @@ class CameraFragment : Fragment() {
             if (granted) {
                 startCamera()
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.permissions_not_granted),
-                    Toast.LENGTH_SHORT
-                ).show()
+                showMessage(R.string.permissions_not_granted)
                 requireActivity().finish()
             }
         }
@@ -87,7 +83,7 @@ class CameraFragment : Fragment() {
         // Set up the listener for take photo button
         val textField = view.findViewById<TextView>(R.id.countdown_text)
         view.findViewById<Button>(R.id.camera_capture_button).setOnClickListener {
-            object : CountDownTimer(3000, 1000) {
+            object : CountDownTimer(3900, 1000) {
 
                 // Count down every second (3, 2, 1) and then show "POSE" on 0
                 override fun onTick(millisUntilFinished: Long) {
@@ -96,7 +92,7 @@ class CameraFragment : Fragment() {
 
                     val remainingSeconds = millisUntilFinished / 1000
                     textField.text = if (remainingSeconds > 0)
-                        "" + (remainingSeconds + 1)
+                        remainingSeconds.toString()
                     else
                         getString(R.string.pose)
                 }
@@ -113,8 +109,15 @@ class CameraFragment : Fragment() {
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         // Add success/failure messages to viewmodel
-        poseViewModel.onSuccess = { showMessage(R.string.poses_match) }
-        poseViewModel.onFail = { showMessage(R.string.poses_dont_match) }
+        poseViewModel.displayStats = {
+            Log.d("Pose Comparator", it.outputAngleDifferences(
+                { id: Int -> getString(id) },
+                { id: Int, sArg: String -> getString(id, sArg) },
+                { id: Int, sArg: String, fArg: Float -> getString(id, sArg, fArg) },
+            ))
+            val percent = DecimalFormat("#.##").format(it.calculateOverallScore())
+            showMessage(getString(R.string.score, percent))
+        }
 
         return view
     }
@@ -132,11 +135,18 @@ class CameraFragment : Fragment() {
         }
     }
 
-    @SuppressLint("UnsafeOptInUsageError")
-    fun showMessage(@StringRes msgId: Int) {
+    private fun showMessage(@StringRes msgId: Int) {
         Toast.makeText(
             requireContext(),
             getString(msgId),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    private fun showMessage(msg: String) {
+        Toast.makeText(
+            requireContext(),
+            msg,
             Toast.LENGTH_SHORT
         ).show()
     }

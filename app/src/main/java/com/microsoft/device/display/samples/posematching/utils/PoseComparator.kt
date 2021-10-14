@@ -19,16 +19,19 @@ fun comparePoses(
     skipKnees: Boolean,
     reference: Pose,
     toCompare: Pose
-): Boolean {
-    val elbows = skipElbows || compareElbowAngles(reference, toCompare)
-    val shoulders = skipShoulders || compareShoulderAngles(reference, toCompare)
-    val hips = skipHips || compareHipAngles(reference, toCompare)
-    val knees = skipKnees || compareKneeAngles(reference, toCompare)
+): MatchingStats {
+    val elbows = if (skipElbows) Pair(null, null) else compareElbowAngles(reference, toCompare)
+    val shoulders =
+        if (skipShoulders) Pair(null, null) else compareShoulderAngles(reference, toCompare)
+    val hips = if (skipHips) Pair(null, null) else compareHipAngles(reference, toCompare)
+    val knees = if (skipKnees) Pair(null, null) else compareKneeAngles(reference, toCompare)
 
-    return elbows && shoulders && hips && knees
+    val stats = MatchingStats(elbows, shoulders, hips, knees)
+    Log.d("Pose Comparator", stats.toString())
+    return stats
 }
 
-private fun compareElbowAngles(reference: Pose, toCompare: Pose): Boolean {
+private fun compareElbowAngles(reference: Pose, toCompare: Pose): Pair<Float?, Float?> {
     val leftLandmarks = listOf(
         PoseLandmark.LEFT_WRIST,
         PoseLandmark.LEFT_ELBOW,
@@ -49,7 +52,7 @@ private fun compareElbowAngles(reference: Pose, toCompare: Pose): Boolean {
     )
 }
 
-private fun compareShoulderAngles(reference: Pose, toCompare: Pose): Boolean {
+private fun compareShoulderAngles(reference: Pose, toCompare: Pose): Pair<Float?, Float?> {
     val leftLandmarks = listOf(
         PoseLandmark.LEFT_ELBOW,
         PoseLandmark.LEFT_SHOULDER,
@@ -70,7 +73,7 @@ private fun compareShoulderAngles(reference: Pose, toCompare: Pose): Boolean {
     )
 }
 
-private fun compareHipAngles(reference: Pose, toCompare: Pose): Boolean {
+private fun compareHipAngles(reference: Pose, toCompare: Pose): Pair<Float?, Float?> {
     val leftLandmarks = listOf(
         PoseLandmark.LEFT_SHOULDER,
         PoseLandmark.LEFT_HIP,
@@ -91,7 +94,7 @@ private fun compareHipAngles(reference: Pose, toCompare: Pose): Boolean {
     )
 }
 
-private fun compareKneeAngles(reference: Pose, toCompare: Pose): Boolean {
+private fun compareKneeAngles(reference: Pose, toCompare: Pose): Pair<Float?, Float?> {
     val leftLandmarks = listOf(
         PoseLandmark.LEFT_ANKLE,
         PoseLandmark.LEFT_KNEE,
@@ -118,23 +121,23 @@ private fun compareLeftAndRightJointAngles(
     reference: Pose,
     toCompare: Pose,
     joint: String
-): Boolean {
-    val left = if (checkJointAnglesInFrame(leftLandmarks, reference))
+): Pair<Float?, Float?> {
+    val left = if (isJointInFrame(leftLandmarks, reference))
         compareJointAngle(leftLandmarks, reference, toCompare)
-    else true
+    else null
 
-    val right = if (checkJointAnglesInFrame(rightLandmarks, reference))
+    val right = if (isJointInFrame(rightLandmarks, reference))
         compareJointAngle(rightLandmarks, reference, toCompare)
-    else true
+    else null
 
     Log.d("PoseComparator", "${joint}s matching? left: $left right: $right")
-    return left && right
+    return Pair(left, right)
 }
 
-private fun checkJointAnglesInFrame(landmarks: List<Int>, reference: Pose): Boolean {
+private fun isJointInFrame(landmarks: List<Int>, pose: Pose): Boolean {
     var inFrame = true
     for (landmark in landmarks) {
-        val landmarkInFrame = isInFrame(reference, landmark)
+        val landmarkInFrame = isInFrame(pose, landmark)
         inFrame = inFrame && landmarkInFrame
         Log.d("Pose Comparator", "landmark: $landmark in frame? $landmarkInFrame")
     }
@@ -146,9 +149,24 @@ private fun isInFrame(pose: Pose, landmark: Int): Boolean {
     return pose.getPoseLandmark(landmark)!!.inFrameLikelihood >= inFrameThreshold
 }
 
-private fun compareJointAngle(landmarks: List<Int>, reference: Pose, toCompare: Pose): Boolean {
+private fun compareJointAngle(landmarks: List<Int>, reference: Pose, toCompare: Pose): Float? {
     check(landmarks.size == 3) { "Invalid landmark array size ${landmarks.size}, should be 3" }
+
+    // Make sure user joint is in frame before comparing
+    if (!isJointInFrame(landmarks, toCompare))
+        return null
+
+    // Return angle difference
     return compareAngle(getJointAngle(reference, landmarks), getJointAngle(toCompare, landmarks))
+}
+
+private fun compareAngle(
+    first: Double,
+    second: Double,
+): Float {
+    val returnVal = second - first
+    Log.d("PoseComparator", "Reference: $first Attempt: $second Diff: $returnVal")
+    return returnVal.toFloat()
 }
 
 private fun compareAngle(

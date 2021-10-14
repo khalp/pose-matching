@@ -13,4 +13,14 @@
     <string name="poses_match">Poses match, great job!</string>
     <string name="poses_dont_match">Poses don\'t match, try again :)</string>
     <string name="pose">POSE!</string>
+    <string name="matching_stats">Matching statistics:\n</string>
+    <string name="angle_difference">%1$s angle difference - %2$f</string>
+    <string name="angle_skipped">%1$s angle comparison was skipped</string>
+    <string name="elbow">elbow</string>
+    <string name="shoulder">shoulder</string>
+    <string name="hip">hip</string>
+    <string name="knee">knee</string>
+    <string name="left">left</string>
+    <string name="right">right</string>
+    <string name="score">Score: %1$s</string>
 </resources>
