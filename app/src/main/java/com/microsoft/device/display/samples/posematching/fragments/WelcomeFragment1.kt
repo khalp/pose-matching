@@ -14,7 +14,7 @@ import com.microsoft.device.display.samples.posematching.viewmodels.GameViewMode
 
 class WelcomeFragment1 : Fragment() {
 
-    private val viewModel: GameViewModel by activityViewModels()
+    private val gameViewModel: GameViewModel by activityViewModels()
 
     private lateinit var welcomeText: TextView
 
@@ -33,16 +33,19 @@ class WelcomeFragment1 : Fragment() {
     }
 
     private fun initializeObservers(view: View) {
-        viewModel.gameState.observe(viewLifecycleOwner, { gameState ->
+        gameViewModel.gameState.observe(viewLifecycleOwner, { gameState ->
             if (gameState != Defines.GameState.STOPPED) {
                 // transition to next screen
                 view.findNavController().navigate(WelcomeFragment1Directions.actionWelcomeFragment1ToReferenceFragment())
             }
         })
 
-        viewModel.isDualScreen.observe(viewLifecycleOwner, { isDualScreen ->
+        gameViewModel.isDualScreen.observe(viewLifecycleOwner, { isDualScreen ->
             if (isDualScreen) {
                 welcomeText.setText(R.string.spanned_welcome_string1)
+                if (gameViewModel.gameState.value == Defines.GameState.STOPPED) {
+                    gameViewModel.pauseGame()
+                }
             } else {
                 welcomeText.setText(R.string.welcome_string1)
             }

@@ -16,10 +16,20 @@
         android:id="@+id/quit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/quit_and_go_home"
+        android:text="@string/restart"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:id="@+id/sit_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_sit"
+        android:contentDescription="@string/ic_sit_description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

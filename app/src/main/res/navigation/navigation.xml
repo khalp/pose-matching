@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_referenceFragment_to_pauseFragment"
             app:destination="@id/pauseFragment" />
+        <action
+            android:id="@+id/action_referenceFragment_to_welcomeFragment1"
+            app:destination="@id/welcomeFragment1" />
     </fragment>
     <fragment
         android:id="@+id/pauseFragment"

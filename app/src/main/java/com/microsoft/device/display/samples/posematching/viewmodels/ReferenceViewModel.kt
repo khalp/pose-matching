@@ -11,6 +11,9 @@ class ReferenceViewModel : ViewModel() {
     val imageUri: LiveData<Uri?>
         get() = _imageUri
 
+    val isUriListEmpty: Boolean
+        get() = _imageUris.isEmpty()
+
     // update the visible imageUri with the top of the uri list
     fun peekImageUri() {
         _imageUri.value = if (_imageUris.isNotEmpty()) _imageUris[0] else null

@@ -70,12 +70,18 @@ class ReferenceFragment : Fragment() {
             }
         })
 
-        // Game can only supports dual screen mode, pause game if it is switched to single screen
+        // Game can only supports dual screen mode, pause game or quit if it is switched to single screen
         gameViewModel.isDualScreen.observe(viewLifecycleOwner, { isDualScreen ->
             if (!isDualScreen) {
-                gameViewModel.pauseGame()
-                view.findNavController()
-                    .navigate(ReferenceFragmentDirections.actionReferenceFragmentToPauseFragment())
+                if (referenceViewModel.isUriListEmpty) {
+                    gameViewModel.finishGame()
+                    view.findNavController()
+                        .navigate(ReferenceFragmentDirections.actionReferenceFragmentToWelcomeFragment1())
+                } else {
+                    gameViewModel.pauseGame()
+                    view.findNavController()
+                        .navigate(ReferenceFragmentDirections.actionReferenceFragmentToPauseFragment())
+                }
             }
         })
     }

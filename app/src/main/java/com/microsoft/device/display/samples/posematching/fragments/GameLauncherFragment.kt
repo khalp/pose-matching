@@ -52,12 +52,6 @@ class GameLauncherFragment : Fragment() {
     }
 
     private fun initializeObservers() {
-        gameViewModel.isDualScreen.observe(viewLifecycleOwner, { isDualScreen ->
-            if (isDualScreen && gameViewModel.gameState.value == Defines.GameState.STOPPED) {
-                gameViewModel.pauseGame()
-            }
-        })
-
         referenceViewModel.imageUri.observe(viewLifecycleOwner, { uri ->
             if (uri != null) {
                 welcomeText.setText(R.string.reference_welcome_string2)
