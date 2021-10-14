@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.google.android.material.button.MaterialButton
 import com.microsoft.device.display.samples.posematching.R
+import com.microsoft.device.display.samples.posematching.utils.Defines
 import com.microsoft.device.display.samples.posematching.viewmodels.ReferenceViewModel
 import com.microsoft.device.display.samples.posematching.viewmodels.GameViewModel
 
@@ -51,8 +52,12 @@ class GameLauncherFragment : Fragment() {
     }
 
     private fun initializeObservers() {
-        gameViewModel.gameStarted.observe(viewLifecycleOwner, { started ->
-            if (started) {
+        gameViewModel.gameStarted.observe(viewLifecycleOwner, { gameState ->
+            if (gameState == Defines.GameState.STOPPED) {
+                welcomeText.setText(R.string.spanned_welcome_string2)
+                launchButton.setText(R.string.start_game)
+                launchButton.visibility = View.VISIBLE
+            } else {
                 welcomeText.setText(R.string.reference_welcome_string2)
                 launchButton.visibility = View.GONE
             }

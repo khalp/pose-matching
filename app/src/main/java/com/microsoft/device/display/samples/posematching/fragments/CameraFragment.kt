@@ -28,6 +28,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.microsoft.device.display.samples.posematching.R
 import com.microsoft.device.display.samples.posematching.utils.CameraImageAnalyzer
+import com.microsoft.device.display.samples.posematching.utils.Defines
 import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay
 import com.microsoft.device.display.samples.posematching.viewmodels.GameViewModel
 import com.microsoft.device.display.samples.posematching.viewmodels.PoseViewModel
@@ -145,8 +146,8 @@ class CameraFragment : Fragment() {
     }
 
     private fun initializeObservers(view: View) {
-        gameViewModel.isDualScreen.observe(viewLifecycleOwner, { isDualScreen ->
-            if (!isDualScreen) {
+        gameViewModel.gameStarted.observe(viewLifecycleOwner, { gameState ->
+            if (gameState != Defines.GameState.RUNNING) {
                 view.findNavController().navigate(CameraFragmentDirections.actionCameraFragmentToGameLauncherFragment())
             }
         })
