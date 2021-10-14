@@ -14,6 +14,7 @@
         <!-- Customize your theme here. -->
         <item name="android:colorBackground">@color/blush_light</item>
         <item name="android:windowLightStatusBar">false</item>
+        <item name="android:fontFamily">@font/akaya_kanadaka_regular</item>
     </style>
 
     <style name="Theme.PoseMatching.NoActionBar">
