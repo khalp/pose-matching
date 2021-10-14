@@ -11,11 +11,11 @@ class ReferenceViewModel : ViewModel() {
     val referenceImage: LiveData<Uri?>
         get() = _image
 
-    val isReferenceListEmpty: Boolean
-        get() = _images.isEmpty()
+    val referencesInList: Int
+        get() = _images.size
 
     // update the visible imageUri with the top of the uri list
-    fun peekImage() {
+    private fun peekImage() {
         _image.value = if (_images.isNotEmpty()) _images[0] else null
     }
 
@@ -30,6 +30,7 @@ class ReferenceViewModel : ViewModel() {
     // add another imageUri to the list
     fun pushImage(uri: Uri) {
         _images.add(uri)
+        peekImage()
     }
 
     // hide the visible imageUri (used for pausing the game)

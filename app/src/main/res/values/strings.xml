@@ -34,4 +34,5 @@
     <string name="reference_image">Reference image</string>
     <string name="pick_reference_image">Pick Reference Image</string>
     <string name="default_references_button_text">Choose Images For Me!</string>
+    <string name="add_reference_image">Add another reference image</string>
 </resources>

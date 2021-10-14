@@ -1,6 +1,7 @@
 package com.microsoft.device.display.samples.posematching.fragments
 
 import android.Manifest
+import android.app.Dialog
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -25,6 +26,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import com.google.android.material.button.MaterialButton
 import com.microsoft.device.display.samples.posematching.R
 import com.microsoft.device.display.samples.posematching.ui.view.CountdownText
 import com.microsoft.device.display.samples.posematching.utils.CameraImageAnalyzer
@@ -46,6 +48,7 @@ class CameraFragment : Fragment() {
 
     private var imageCapture: ImageCapture? = null
     private var imageAnalysis: ImageAnalysis? = null
+    private var scoreDialog: Dialog? = null
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var previewView: PreviewView
@@ -103,7 +106,7 @@ class CameraFragment : Fragment() {
             )
             val score = stats.calculateOverallScore()
             val msg = score?.let { DecimalFormat("#.##").format(it) } ?: getString(R.string.unable)
-            showMessage(getString(R.string.score, msg))
+            showScoreDialog(msg)
         }
 
         return view
@@ -157,6 +160,12 @@ class CameraFragment : Fragment() {
                 }.start()
             }
         })
+
+        referenceViewModel.referenceImage.observe(viewLifecycleOwner, { image ->
+            if (image == null) {
+                view.findNavController().navigate(CameraFragmentDirections.actionCameraFragmentToGameFinishedFragment())
+            }
+        })
     }
 
     private fun showMessage(@StringRes msgId: Int) {
@@ -173,6 +182,29 @@ class CameraFragment : Fragment() {
             msg,
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    private fun showScoreDialog(msg: String) {
+        activity?.let { activity ->
+            scoreDialog = Dialog(activity)
+            scoreDialog?.let { dialog ->
+                dialog.setOnCancelListener {
+                    referenceViewModel.popImage()
+                    graphicOverlay.clear()
+                    graphicOverlay.invalidate()
+                    scoreDialog = null
+                }
+
+                dialog.setContentView(R.layout.dialog_score)
+
+                dialog.findViewById<TextView>(R.id.dialog_text).text = msg
+                dialog.findViewById<MaterialButton>(R.id.dialog_button).setOnClickListener {
+                    dialog.cancel()
+                }
+
+                dialog.show()
+            }
+        }
     }
 
     private fun takeVideoSnapshot() {
