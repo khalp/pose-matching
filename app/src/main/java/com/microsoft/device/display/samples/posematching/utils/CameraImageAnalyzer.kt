@@ -72,7 +72,8 @@ class CameraImageAnalyzer(
                     graphicOverlay = graphicOverlay,
                     referenceImage = refImg,
                     image = img,
-                    imageProxy = imageProxy
+                    imageProxy = imageProxy,
+                    referenceViewModel = referenceViewModel,
                 )
                 viewModel.screenshot = false
             } else {
