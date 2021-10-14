@@ -9,17 +9,31 @@
         android:id="@+id/welcome_text2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/welcome_string1"
+        android:text="@string/spanned_welcome_string2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/launch_game_button"
+    <ImageView
+        android:id="@+id/point_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/start_game"
+        android:src="@drawable/ic_point"
+        android:contentDescription="@string/ic_point_description"
+        android:rotationY="180"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <ImageView
+        android:id="@+id/carry_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_carry"
+        android:contentDescription="@string/ic_carry_description"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

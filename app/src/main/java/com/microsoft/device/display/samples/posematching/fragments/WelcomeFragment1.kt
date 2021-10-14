@@ -8,8 +8,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
-import com.google.android.material.button.MaterialButton
-import com.microsoft.device.display.samples.posematching.MainActivity
 import com.microsoft.device.display.samples.posematching.R
 import com.microsoft.device.display.samples.posematching.utils.Defines
 import com.microsoft.device.display.samples.posematching.viewmodels.GameViewModel
@@ -35,8 +33,8 @@ class WelcomeFragment1 : Fragment() {
     }
 
     private fun initializeObservers(view: View) {
-        viewModel.gameStarted.observe(viewLifecycleOwner, { gameState ->
-            if (gameState == Defines.GameState.RUNNING) {
+        viewModel.gameState.observe(viewLifecycleOwner, { gameState ->
+            if (gameState != Defines.GameState.STOPPED) {
                 // transition to next screen
                 view.findNavController().navigate(WelcomeFragment1Directions.actionWelcomeFragment1ToReferenceFragment())
             }

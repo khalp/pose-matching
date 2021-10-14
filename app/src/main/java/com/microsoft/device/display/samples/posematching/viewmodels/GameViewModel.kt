@@ -7,7 +7,7 @@ import com.microsoft.device.display.samples.posematching.utils.Defines
 
 class GameViewModel : ViewModel() {
     private val _gameState = MutableLiveData(Defines.GameState.STOPPED)
-    val gameStarted: LiveData<Defines.GameState>
+    val gameState: LiveData<Defines.GameState>
         get() = _gameState
 
     val isDualScreen = MutableLiveData(false)

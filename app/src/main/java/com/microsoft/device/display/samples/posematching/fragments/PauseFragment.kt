@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.google.android.material.button.MaterialButton
 import com.microsoft.device.display.samples.posematching.R
+import com.microsoft.device.display.samples.posematching.utils.Defines
 import com.microsoft.device.display.samples.posematching.viewmodels.GameViewModel
 import com.microsoft.device.display.samples.posematching.viewmodels.ReferenceViewModel
 
@@ -28,20 +29,27 @@ class PauseFragment : Fragment() {
 
         quitButton = view.findViewById(R.id.quit_button)
 
-        initializeButtons(view)
+        initializeButtons()
+        initializeObservers(view)
 
         return view
     }
 
-    private fun initializeButtons(view: View) {
+    private fun initializeButtons() {
         quitButton.setOnClickListener {
-            quitGame()
-            view.findNavController().navigate(PauseFragmentDirections.actionPauseFragmentToWelcomeFragment1())
+            referenceViewModel.clearImageUris()
+            gameViewModel.finishGame()
         }
     }
 
-    private fun quitGame() {
-        referenceViewModel.clearImageUris()
-        gameViewModel.finishGame()
+    private fun initializeObservers(view: View) {
+        gameViewModel.gameState.observe(viewLifecycleOwner, { gameState ->
+            if (gameState == Defines.GameState.RUNNING) {
+                view.findNavController().navigate(PauseFragmentDirections.actionPauseFragmentToReferenceFragment())
+            }
+            else if (gameState == Defines.GameState.STOPPED) {
+                view.findNavController().navigate(PauseFragmentDirections.actionPauseFragmentToWelcomeFragment1())
+            }
+        })
     }
 }

@@ -146,7 +146,7 @@ class CameraFragment : Fragment() {
     }
 
     private fun initializeObservers(view: View) {
-        gameViewModel.gameStarted.observe(viewLifecycleOwner, { gameState ->
+        gameViewModel.gameState.observe(viewLifecycleOwner, { gameState ->
             if (gameState != Defines.GameState.RUNNING) {
                 view.findNavController().navigate(CameraFragmentDirections.actionCameraFragmentToGameLauncherFragment())
             }
@@ -243,6 +243,8 @@ class CameraFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        cameraExecutor.shutdown()
+        if (this::cameraExecutor.isInitialized) {
+            cameraExecutor.shutdown()
+        }
     }
 }

@@ -27,4 +27,7 @@
     <string name="game_paused">Game Paused</string>
     <string name="launch_game">I\'m ready!</string>
     <string name="quit_and_go_home">Quit and go home</string>
+    <string name="ic_span_description">Stick figure with outstretched arms</string>
+    <string name="ic_point_description">Stick figure pointing to the side</string>
+    <string name="ic_carry_description">Stick figure carrying a circle that reads Let\'s Play</string>
 </resources>

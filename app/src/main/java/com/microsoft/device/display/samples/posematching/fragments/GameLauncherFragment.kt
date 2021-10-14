@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
-import com.google.android.material.button.MaterialButton
 import com.microsoft.device.display.samples.posematching.R
 import com.microsoft.device.display.samples.posematching.utils.Defines
 import com.microsoft.device.display.samples.posematching.viewmodels.ReferenceViewModel
@@ -21,7 +20,8 @@ class GameLauncherFragment : Fragment() {
     private val referenceViewModel: ReferenceViewModel by activityViewModels()
 
     private lateinit var welcomeText: TextView
-    private lateinit var launchButton: MaterialButton
+    private lateinit var pointIcon: ImageView
+    private lateinit var carryIcon: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,7 +31,8 @@ class GameLauncherFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_game_launcher, container, false)
 
         welcomeText = view.findViewById(R.id.welcome_text2)
-        launchButton = view.findViewById(R.id.launch_game_button)
+        pointIcon = view.findViewById(R.id.point_icon)
+        carryIcon = view.findViewById(R.id.carry_icon)
 
         initializeButtons(view)
         initializeObservers()
@@ -40,10 +41,9 @@ class GameLauncherFragment : Fragment() {
     }
 
     private fun initializeButtons(view: View) {
-        launchButton.setOnClickListener {
-            if (referenceViewModel.imageUri.value == null) {
+        carryIcon.setOnClickListener {
+            if (referenceViewModel.imageUri.value != null) {
                 gameViewModel.startGame()
-            } else {
                 // transition to next screen
                 view.findNavController()
                     .navigate(GameLauncherFragmentDirections.actionGameLauncherFragmentToCameraFragment())
@@ -52,21 +52,21 @@ class GameLauncherFragment : Fragment() {
     }
 
     private fun initializeObservers() {
-        gameViewModel.gameStarted.observe(viewLifecycleOwner, { gameState ->
-            if (gameState == Defines.GameState.STOPPED) {
-                welcomeText.setText(R.string.spanned_welcome_string2)
-                launchButton.setText(R.string.start_game)
-                launchButton.visibility = View.VISIBLE
-            } else {
-                welcomeText.setText(R.string.reference_welcome_string2)
-                launchButton.visibility = View.GONE
+        gameViewModel.isDualScreen.observe(viewLifecycleOwner, { isDualScreen ->
+            if (isDualScreen && gameViewModel.gameState.value == Defines.GameState.STOPPED) {
+                gameViewModel.pauseGame()
             }
         })
 
         referenceViewModel.imageUri.observe(viewLifecycleOwner, { uri ->
             if (uri != null) {
-                launchButton.setText(R.string.launch_game)
-                launchButton.visibility = View.VISIBLE
+                welcomeText.setText(R.string.reference_welcome_string2)
+                pointIcon.visibility = View.GONE
+                carryIcon.visibility = View.VISIBLE
+            } else {
+                welcomeText.setText(R.string.spanned_welcome_string2)
+                pointIcon.visibility = View.VISIBLE
+                carryIcon.visibility = View.GONE
             }
         })
     }
