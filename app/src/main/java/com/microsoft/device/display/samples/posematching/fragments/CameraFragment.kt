@@ -2,7 +2,6 @@ package com.microsoft.device.display.samples.posematching.fragments
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Typeface
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -11,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
@@ -21,12 +19,14 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.microsoft.device.display.samples.posematching.R
+import com.microsoft.device.display.samples.posematching.ui.view.CountdownText
 import com.microsoft.device.display.samples.posematching.utils.CameraImageAnalyzer
 import com.microsoft.device.display.samples.posematching.utils.Defines
 import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay
@@ -86,25 +86,26 @@ class CameraFragment : Fragment() {
         graphicOverlay = view.findViewById(R.id.graphic_overlay)
 
         // Set up the listener for take photo button
-        val textField = view.findViewById<TextView>(R.id.countdown_text)
+        val textField = view.findViewById<ComposeView>(R.id.countdown_text)
         view.findViewById<Button>(R.id.camera_capture_button).setOnClickListener {
             object : CountDownTimer(3900, 1000) {
 
-                // Count down every second (3, 2, 1) and then show "POSE" on 0
+                // Count down every second (3, 2, 1) and then show "POSE!" on 0
                 override fun onTick(millisUntilFinished: Long) {
-                    textField.textSize = 70f
-                    textField.typeface = Typeface.DEFAULT_BOLD
-
                     val remainingSeconds = millisUntilFinished / 1000
-                    textField.text = if (remainingSeconds > 0)
-                        remainingSeconds.toString()
-                    else
-                        getString(R.string.pose)
+                    textField.setContent {
+                        CountdownText(
+                            text = if (remainingSeconds > 0)
+                                remainingSeconds.toString()
+                            else
+                                getString(R.string.pose)
+                        )
+                    }
                 }
 
                 // Clear text field and take snapshot
                 override fun onFinish() {
-                    textField.text = ""
+                    textField.setContent {}
                     takeVideoSnapshot()
                 }
             }.start()
