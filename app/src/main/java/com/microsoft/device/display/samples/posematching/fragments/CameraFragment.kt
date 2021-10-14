@@ -109,14 +109,17 @@ class CameraFragment : Fragment() {
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         // Add success/failure messages to viewmodel
-        poseViewModel.displayStats = {
-            Log.d("Pose Comparator", it.outputAngleDifferences(
-                { id: Int -> getString(id) },
-                { id: Int, sArg: String -> getString(id, sArg) },
-                { id: Int, sArg: String, fArg: Float -> getString(id, sArg, fArg) },
-            ))
-            val percent = DecimalFormat("#.##").format(it.calculateOverallScore())
-            showMessage(getString(R.string.score, percent))
+        poseViewModel.displayStats = { stats ->
+            Log.d(
+                "Pose Comparator", stats.outputAngleDifferences(
+                    { id: Int -> getString(id) },
+                    { id: Int, sArg: String -> getString(id, sArg) },
+                    { id: Int, sArg: String, fArg: Float -> getString(id, sArg, fArg) },
+                )
+            )
+            val score = stats.calculateOverallScore()
+            val msg = score?.let { DecimalFormat("#.##").format(it) } ?: getString(R.string.unable)
+            showMessage(getString(R.string.score, msg))
         }
 
         return view

@@ -146,7 +146,7 @@ private fun isJointInFrame(landmarks: List<Int>, pose: Pose): Boolean {
 }
 
 private fun isInFrame(pose: Pose, landmark: Int): Boolean {
-    return pose.getPoseLandmark(landmark)!!.inFrameLikelihood >= inFrameThreshold
+    return pose.getPoseLandmark(landmark)?.let { it.inFrameLikelihood >= inFrameThreshold } ?: false
 }
 
 private fun compareJointAngle(landmarks: List<Int>, reference: Pose, toCompare: Pose): Float? {

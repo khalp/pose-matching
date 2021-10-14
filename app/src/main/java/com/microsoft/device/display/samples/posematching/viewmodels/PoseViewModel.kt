@@ -69,6 +69,9 @@ class PoseViewModel : ViewModel() {
                 referencePose = it
                 drawAndComparePoses(graphicOverlay)
             }
+            .addOnFailureListener {e ->
+                Log.d("PoseViewModel", "Failed to process reference image", e)
+            }
 
         // Process user image to get image pose data
         poseDetector.process(image)
@@ -78,7 +81,7 @@ class PoseViewModel : ViewModel() {
                 drawAndComparePoses(graphicOverlay)
             }
             .addOnFailureListener { e ->
-                Log.d("PoseTest", "Boo, failure", e)
+                Log.d("PoseViewModel", "Failed to process user image", e)
                 imageProxy?.close()
             }
     }
