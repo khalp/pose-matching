@@ -36,6 +36,7 @@ class ReferenceFragment : Fragment() {
     private lateinit var referenceImage: ImageView
     private lateinit var graphicOverlay: GraphicOverlay
     private lateinit var pickImageButton: MaterialButton
+    private lateinit var defaultReferencesButton: MaterialButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,18 +48,26 @@ class ReferenceFragment : Fragment() {
         referenceImage = view.findViewById(R.id.reference_image)
         graphicOverlay = view.findViewById(R.id.reference_graphic_overlay)
         pickImageButton = view.findViewById(R.id.pick_image_button)
+        defaultReferencesButton = view.findViewById(R.id.default_references_button)
 
-        pickImageButton.setOnClickListener {
-            openGallery()
-        }
-
+        initializeButtons()
         initializeObservers(view)
 
         return view
     }
 
+    private fun initializeButtons() {
+        pickImageButton.setOnClickListener {
+            openGallery()
+        }
+
+        defaultReferencesButton.setOnClickListener {
+
+        }
+    }
+
     private fun initializeObservers(view: View) {
-        referenceViewModel.imageUri.observe(viewLifecycleOwner, { uri ->
+        referenceViewModel.referenceImage.observe(viewLifecycleOwner, { uri ->
             if (uri != null) {
                 referenceImage.setImageURI(uri)
 
@@ -73,7 +82,7 @@ class ReferenceFragment : Fragment() {
         // Game can only supports dual screen mode, pause game or quit if it is switched to single screen
         gameViewModel.isDualScreen.observe(viewLifecycleOwner, { isDualScreen ->
             if (!isDualScreen) {
-                if (referenceViewModel.isUriListEmpty) {
+                if (referenceViewModel.isReferenceListEmpty) {
                     gameViewModel.finishGame()
                     view.findNavController()
                         .navigate(ReferenceFragmentDirections.actionReferenceFragmentToWelcomeFragment1())
@@ -100,8 +109,8 @@ class ReferenceFragment : Fragment() {
         ) {
             if (it.resultCode == Activity.RESULT_OK) {
                 it.data?.data?.let { imageUri ->
-                    referenceViewModel.pushImageUri(imageUri)
-                    referenceViewModel.peekImageUri()
+                    referenceViewModel.pushImage(imageUri)
+                    referenceViewModel.peekImage()
                 }
             }
         }

@@ -37,7 +37,7 @@ class PauseFragment : Fragment() {
 
     private fun initializeButtons() {
         quitButton.setOnClickListener {
-            referenceViewModel.clearImageUris()
+            referenceViewModel.clearImages()
             gameViewModel.finishGame()
         }
     }

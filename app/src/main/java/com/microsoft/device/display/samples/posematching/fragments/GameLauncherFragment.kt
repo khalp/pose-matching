@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.microsoft.device.display.samples.posematching.R
-import com.microsoft.device.display.samples.posematching.utils.Defines
 import com.microsoft.device.display.samples.posematching.viewmodels.ReferenceViewModel
 import com.microsoft.device.display.samples.posematching.viewmodels.GameViewModel
 
@@ -42,7 +41,7 @@ class GameLauncherFragment : Fragment() {
 
     private fun initializeButtons(view: View) {
         carryIcon.setOnClickListener {
-            if (referenceViewModel.imageUri.value != null) {
+            if (referenceViewModel.referenceImage.value != null) {
                 gameViewModel.startGame()
                 // transition to next screen
                 view.findNavController()
@@ -52,7 +51,7 @@ class GameLauncherFragment : Fragment() {
     }
 
     private fun initializeObservers() {
-        referenceViewModel.imageUri.observe(viewLifecycleOwner, { uri ->
+        referenceViewModel.referenceImage.observe(viewLifecycleOwner, { uri ->
             if (uri != null) {
                 welcomeText.setText(R.string.reference_welcome_string2)
                 pointIcon.visibility = View.GONE

@@ -6,39 +6,39 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class ReferenceViewModel : ViewModel() {
-    private val _imageUris = mutableListOf<Uri>()
-    private val _imageUri = MutableLiveData<Uri?>()
-    val imageUri: LiveData<Uri?>
-        get() = _imageUri
+    private val _images = mutableListOf<Uri>()
+    private val _image = MutableLiveData<Uri?>()
+    val referenceImage: LiveData<Uri?>
+        get() = _image
 
-    val isUriListEmpty: Boolean
-        get() = _imageUris.isEmpty()
+    val isReferenceListEmpty: Boolean
+        get() = _images.isEmpty()
 
     // update the visible imageUri with the top of the uri list
-    fun peekImageUri() {
-        _imageUri.value = if (_imageUris.isNotEmpty()) _imageUris[0] else null
+    fun peekImage() {
+        _image.value = if (_images.isNotEmpty()) _images[0] else null
     }
 
     // advance to the next imageUri
-    fun popImageUri() {
-        if (_imageUris.isNotEmpty()) {
-            _imageUris.removeAt(0)
-            peekImageUri()
+    fun popImage() {
+        if (_images.isNotEmpty()) {
+            _images.removeAt(0)
+            peekImage()
         }
     }
 
     // add another imageUri to the list
-    fun pushImageUri(uri: Uri) {
-        _imageUris.add(uri)
+    fun pushImage(uri: Uri) {
+        _images.add(uri)
     }
 
     // hide the visible imageUri (used for pausing the game)
-    fun hideImageUri() {
-        _imageUri.value = null
+    fun hideImage() {
+        _image.value = null
     }
 
-    fun clearImageUris() {
-        _imageUris.clear()
-        peekImageUri()
+    fun clearImages() {
+        _images.clear()
+        peekImage()
     }
 }
