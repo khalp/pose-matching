@@ -15,7 +15,7 @@ class GameViewModel : ViewModel() {
         _gameStarted.value = true
     }
 
-    fun startGameReceived() {
+    fun finishGame() {
         _gameStarted.value = false
     }
 }

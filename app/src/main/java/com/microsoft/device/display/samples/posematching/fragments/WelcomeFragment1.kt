@@ -18,7 +18,6 @@ class WelcomeFragment1 : Fragment() {
     private val viewModel: GameViewModel by activityViewModels()
 
     private lateinit var welcomeText: TextView
-    private lateinit var startButton: MaterialButton
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,32 +27,25 @@ class WelcomeFragment1 : Fragment() {
         val view = inflater.inflate(R.layout.fragment_welcome1, container, false)
 
         welcomeText = view.findViewById(R.id.welcome_text1)
-        startButton = view.findViewById(R.id.start_button1)
 
-        initializeObservers()
+        initializeObservers(view)
 
         return view
     }
 
-    private fun initializeButton(button: MaterialButton) {
-        startButton.visibility = View.VISIBLE
-        button.setOnClickListener {
-            viewModel.startGame()
-        }
-    }
-
-    private fun initializeObservers() {
+    private fun initializeObservers(view: View) {
         viewModel.gameStarted.observe(viewLifecycleOwner, { started ->
             if (started) {
                 // transition to next screen
-                requireView().findNavController().navigate(WelcomeFragment1Directions.actionWelcomeFragment1ToReferenceFragment())
+                view.findNavController().navigate(WelcomeFragment1Directions.actionWelcomeFragment1ToReferenceFragment())
             }
         })
 
         viewModel.isDualScreen.observe(viewLifecycleOwner, { isDualScreen ->
             if (isDualScreen) {
                 welcomeText.setText(R.string.spanned_welcome_string1)
-                initializeButton(startButton)
+            } else {
+                welcomeText.setText(R.string.welcome_string1)
             }
         })
     }

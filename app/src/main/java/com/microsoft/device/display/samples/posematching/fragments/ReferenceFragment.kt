@@ -8,14 +8,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import com.google.android.material.button.MaterialButton
 import com.google.mlkit.vision.common.InputImage
 import com.microsoft.device.display.samples.posematching.R
 import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay
+import com.microsoft.device.display.samples.posematching.viewmodels.GameViewModel
 import com.microsoft.device.display.samples.posematching.viewmodels.PoseViewModel
 import com.microsoft.device.display.samples.posematching.viewmodels.ReferenceViewModel
 
@@ -26,7 +29,8 @@ import com.microsoft.device.display.samples.posematching.viewmodels.ReferenceVie
  */
 class ReferenceFragment : Fragment() {
 
-    private val viewModel: ReferenceViewModel by activityViewModels()
+    private val referenceViewModel: ReferenceViewModel by activityViewModels()
+    private val gameViewModel: GameViewModel by activityViewModels()
     private val poseViewModel: PoseViewModel by viewModels()
 
     private lateinit var referenceImage: ImageView
@@ -48,18 +52,30 @@ class ReferenceFragment : Fragment() {
             openGallery()
         }
 
-        initializeObservers()
+        initializeObservers(view)
 
         return view
     }
 
-    private fun initializeObservers() {
-        viewModel.imageUri.observe(viewLifecycleOwner, { uri ->
-            referenceImage.setImageURI(uri)
+    private fun initializeObservers(view: View) {
+        referenceViewModel.imageUri.observe(viewLifecycleOwner, { uri ->
+            if (uri != null) {
+                referenceImage.setImageURI(uri)
 
-            val img = InputImage.fromFilePath(requireContext(), uri)
-            poseViewModel.initializeGraphicOverlay(graphicOverlay, img, false)
-            poseViewModel.analyzeImage(graphicOverlay, img)
+                val img = InputImage.fromFilePath(requireContext(), uri)
+                poseViewModel.initializeGraphicOverlay(graphicOverlay, img, false)
+                poseViewModel.analyzeImage(graphicOverlay, img)
+            } else {
+                Toast.makeText(requireContext(), "Failed to load image!", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        // Game can only supports dual screen mode, pause game if it is switched to single screen
+        gameViewModel.isDualScreen.observe(viewLifecycleOwner, { isDualScreen ->
+            if (!isDualScreen) {
+                view.findNavController()
+                    .navigate(ReferenceFragmentDirections.actionReferenceFragmentToPauseFragment())
+            }
         })
     }
 
@@ -77,7 +93,8 @@ class ReferenceFragment : Fragment() {
         ) {
             if (it.resultCode == Activity.RESULT_OK) {
                 it.data?.data?.let { imageUri ->
-                    viewModel.setImageUri(imageUri)
+                    referenceViewModel.pushImageUri(imageUri)
+                    referenceViewModel.peekImageUri()
                 }
             }
         }

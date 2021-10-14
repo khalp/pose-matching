@@ -25,9 +25,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import com.microsoft.device.display.samples.posematching.R
 import com.microsoft.device.display.samples.posematching.utils.CameraImageAnalyzer
 import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay
+import com.microsoft.device.display.samples.posematching.viewmodels.GameViewModel
 import com.microsoft.device.display.samples.posematching.viewmodels.PoseViewModel
 import com.microsoft.device.display.samples.posematching.viewmodels.ReferenceViewModel
 import java.io.File
@@ -37,14 +39,16 @@ import java.util.concurrent.Executors
 
 
 class CameraFragment : Fragment() {
+    private val poseViewModel: PoseViewModel by viewModels()
+    private val gameViewModel: GameViewModel by activityViewModels()
+    private val referenceViewModel: ReferenceViewModel by activityViewModels()
+
     private var imageCapture: ImageCapture? = null
     private var imageAnalysis: ImageAnalysis? = null
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var previewView: PreviewView
     private lateinit var graphicOverlay: GraphicOverlay
-    private val poseViewModel: PoseViewModel by viewModels()
-    private val referenceViewModel: ReferenceViewModel by activityViewModels()
 
     companion object {
         @JvmStatic
@@ -105,6 +109,8 @@ class CameraFragment : Fragment() {
             }.start()
         }
 
+        initializeObservers(view)
+
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
 
@@ -136,6 +142,14 @@ class CameraFragment : Fragment() {
         } else {
             permissionsReq.launch(REQUIRED_PERMISSIONS)
         }
+    }
+
+    private fun initializeObservers(view: View) {
+        gameViewModel.isDualScreen.observe(viewLifecycleOwner, { isDualScreen ->
+            if (!isDualScreen) {
+                view.findNavController().navigate(CameraFragmentDirections.actionCameraFragmentToGameLauncherFragment())
+            }
+        })
     }
 
     private fun showMessage(@StringRes msgId: Int) {

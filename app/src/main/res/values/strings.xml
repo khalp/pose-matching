@@ -24,4 +24,6 @@
     <string name="right">right</string>
     <string name="score">Score: %1$s</string>
     <string name="unable">unable to calculate</string>
+    <string name="game_paused">Game Paused</string>
+    <string name="launch_game">I\'m ready!</string>
 </resources>
