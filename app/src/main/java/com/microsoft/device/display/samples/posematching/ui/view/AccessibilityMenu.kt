@@ -1,5 +1,6 @@
 package com.microsoft.device.display.samples.posematching.ui.view
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -61,9 +62,22 @@ private fun SwitchWithLabel(label: String, checked: Boolean, updateValue: (Boole
     }
 }
 
-@Preview
+@Preview(
+    showBackground = true
+)
 @Composable
 private fun PreviewMenu() {
+    PoseMatchingTheme {
+        AccessibilityMenu()
+    }
+}
+
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true
+)
+@Composable
+private fun PreviewMenuDark() {
     PoseMatchingTheme {
         AccessibilityMenu()
     }
