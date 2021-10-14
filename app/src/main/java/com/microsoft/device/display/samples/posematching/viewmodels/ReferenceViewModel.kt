@@ -41,4 +41,34 @@ class ReferenceViewModel : ViewModel() {
         _images.clear()
         peekImage()
     }
+
+    private val _checkElbows = MutableLiveData<Boolean>()
+    val checkElbows: LiveData<Boolean>
+        get() = _checkElbows
+
+    fun setCheckElbows(value: Boolean) { _checkElbows.value = value }
+
+    private val _checkShoulders = MutableLiveData<Boolean>()
+    val checkShoulders: LiveData<Boolean>
+        get() = _checkShoulders
+
+    fun setCheckShoulders(value: Boolean) { _checkShoulders.value = value }
+
+    private val _checkHips = MutableLiveData<Boolean>()
+    val checkHips: LiveData<Boolean>
+        get() = _checkHips
+
+    fun setCheckHips(value: Boolean) { _checkHips.value = value }
+
+    private val _checkKnees = MutableLiveData<Boolean>()
+    val checkKnees: LiveData<Boolean>
+        get() = _checkKnees
+
+    fun setCheckKnees(value: Boolean) { _checkKnees.value = value }
+
+    private val _timerLength = MutableLiveData<Int>()
+    val timerLength: LiveData<Int>
+        get() = _timerLength
+
+    fun setTimerLength(value: Int) { _timerLength.value = value }
 }

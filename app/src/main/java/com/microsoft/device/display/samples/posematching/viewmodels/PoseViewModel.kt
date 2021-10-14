@@ -62,14 +62,15 @@ class PoseViewModel : ViewModel() {
         referenceImage: InputImage,
         image: InputImage,
         imageProxy: ImageProxy? = null,
+        referenceViewModel: ReferenceViewModel,
     ) {
         // Process reference image to get reference pose data
         poseDetector.process(referenceImage)
             .addOnSuccessListener {
                 referencePose = it
-                drawAndComparePoses(graphicOverlay)
+                drawAndComparePoses(graphicOverlay, referenceViewModel)
             }
-            .addOnFailureListener {e ->
+            .addOnFailureListener { e ->
                 Log.d("PoseViewModel", "Failed to process reference image", e)
             }
 
@@ -78,7 +79,7 @@ class PoseViewModel : ViewModel() {
             .addOnSuccessListener {
                 userPose = it
                 imageProxy?.close()
-                drawAndComparePoses(graphicOverlay)
+                drawAndComparePoses(graphicOverlay, referenceViewModel)
             }
             .addOnFailureListener { e ->
                 Log.d("PoseViewModel", "Failed to process user image", e)
@@ -86,20 +87,28 @@ class PoseViewModel : ViewModel() {
             }
     }
 
-    private fun drawAndComparePoses(graphicOverlay: GraphicOverlay) {
+    private fun drawAndComparePoses(
+        graphicOverlay: GraphicOverlay,
+        referenceViewModel: ReferenceViewModel
+    ) {
         // REVISIT: not very async friendly, haven't figured out how to "join" the tasks yet
         if (referencePose == null || userPose == null)
             return
 
         drawPoses(graphicOverlay, userPose!!)
+        val checkElbows = referenceViewModel.checkElbows.value ?: true
+        val checkShoulders = referenceViewModel.checkShoulders.value ?: true
+        val checkHips = referenceViewModel.checkHips.value ?: true
+        val checkKnees = referenceViewModel.checkKnees.value ?: true
+
         val stats = comparePoses(
-                skipElbows,
-                skipShoulders,
-                skipHips,
-                skipKnees,
-                referencePose!!,
-                userPose!!
-            )
+            !checkElbows,
+            !checkShoulders,
+            !checkHips,
+            !checkKnees,
+            referencePose!!,
+            userPose!!
+        )
         displayStats(stats)
     }
 

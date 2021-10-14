@@ -10,6 +10,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -17,6 +23,7 @@ import androidx.navigation.findNavController
 import com.google.android.material.button.MaterialButton
 import com.google.mlkit.vision.common.InputImage
 import com.microsoft.device.display.samples.posematching.R
+import com.microsoft.device.display.samples.posematching.ui.view.Settings
 import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay
 import com.microsoft.device.display.samples.posematching.viewmodels.GameViewModel
 import com.microsoft.device.display.samples.posematching.viewmodels.PoseViewModel
@@ -38,6 +45,7 @@ class ReferenceFragment : Fragment() {
     private lateinit var pickImageButton: MaterialButton
     private lateinit var defaultReferencesButton: MaterialButton
 
+    @ExperimentalFoundationApi
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -64,6 +72,23 @@ class ReferenceFragment : Fragment() {
         defaultReferencesButton.setOnClickListener {
 
         }
+        
+        view.findViewById<ComposeView>(R.id.settings_drawer).setContent {
+            Settings(
+                viewModel.timerLength,
+                { viewModel.setTimerLength(it) },
+                viewModel.checkElbows,
+                { viewModel.setCheckElbows(it) },
+                viewModel.checkShoulders,
+                { viewModel.setCheckShoulders(it) },
+                viewModel.checkHips,
+                { viewModel.setCheckHips(it) },
+                viewModel.checkKnees,
+                { viewModel.setCheckKnees(it) },
+            )
+        }
+
+        initializeObservers()
     }
 
     private fun initializeObservers(view: View) {
