@@ -26,6 +26,7 @@ class WelcomeFragment1 : Fragment() {
         val view = inflater.inflate(R.layout.fragment_welcome1, container, false)
 
         welcomeText = view.findViewById(R.id.welcome_text1)
+        welcomeText.textSize = 50f
 
         initializeObservers(view)
 

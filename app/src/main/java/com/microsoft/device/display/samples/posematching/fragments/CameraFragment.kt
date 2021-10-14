@@ -25,7 +25,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
-import com.google.mlkit.vision.common.InputImage
 import com.microsoft.device.display.samples.posematching.R
 import com.microsoft.device.display.samples.posematching.ui.view.CountdownText
 import com.microsoft.device.display.samples.posematching.utils.CameraImageAnalyzer
@@ -126,8 +125,11 @@ class CameraFragment : Fragment() {
     private fun initializeObservers(view: View) {
         gameViewModel.gameState.observe(viewLifecycleOwner, { gameState ->
             if (gameState != Defines.GameState.RUNNING) {
-                view.findNavController().navigate(CameraFragmentDirections.actionCameraFragmentToGameLauncherFragment())
-                
+                view.findNavController()
+                    .navigate(CameraFragmentDirections.actionCameraFragmentToGameLauncherFragment())
+            }
+        })
+
         referenceViewModel.timerLength.observe(viewLifecycleOwner, { timerLength ->
             val textField = view.findViewById<ComposeView>(R.id.countdown_text)
             view.findViewById<Button>(R.id.camera_capture_button).setOnClickListener {

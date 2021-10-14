@@ -11,10 +11,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -64,6 +60,7 @@ class ReferenceFragment : Fragment() {
         return view
     }
 
+    @ExperimentalFoundationApi
     private fun initializeButtons() {
         pickImageButton.setOnClickListener {
             openGallery()
@@ -72,25 +69,9 @@ class ReferenceFragment : Fragment() {
         defaultReferencesButton.setOnClickListener {
 
         }
-        
-        view.findViewById<ComposeView>(R.id.settings_drawer).setContent {
-            Settings(
-                viewModel.timerLength,
-                { viewModel.setTimerLength(it) },
-                viewModel.checkElbows,
-                { viewModel.setCheckElbows(it) },
-                viewModel.checkShoulders,
-                { viewModel.setCheckShoulders(it) },
-                viewModel.checkHips,
-                { viewModel.setCheckHips(it) },
-                viewModel.checkKnees,
-                { viewModel.setCheckKnees(it) },
-            )
-        }
-
-        initializeObservers()
     }
 
+    @ExperimentalFoundationApi
     private fun initializeObservers(view: View) {
         referenceViewModel.referenceImage.observe(viewLifecycleOwner, { uri ->
             if (uri != null) {
@@ -118,6 +99,21 @@ class ReferenceFragment : Fragment() {
                 }
             }
         })
+
+        view.findViewById<ComposeView>(R.id.settings_drawer).setContent {
+            Settings(
+                referenceViewModel.timerLength,
+                { referenceViewModel.setTimerLength(it) },
+                referenceViewModel.checkElbows,
+                { referenceViewModel.setCheckElbows(it) },
+                referenceViewModel.checkShoulders,
+                { referenceViewModel.setCheckShoulders(it) },
+                referenceViewModel.checkHips,
+                { referenceViewModel.setCheckHips(it) },
+                referenceViewModel.checkKnees,
+                { referenceViewModel.setCheckKnees(it) },
+            )
+        }
     }
 
     /**
