@@ -34,7 +34,7 @@ class CameraImageAnalyzer(
         imageProxy.image?.let { mediaImage ->
             if (viewModel.screenshot) {
                 // Load the reference image and check if it's flipped
-                val refUri = referenceViewModel.imageUri.value ?: return
+                val refUri = referenceViewModel.referenceImage.value ?: return
                 var inputStream = context.contentResolver.openInputStream(refUri) ?: return
                 val isFlippedHorizontally =
                     ExifInterface(inputStream).getAttributeInt(

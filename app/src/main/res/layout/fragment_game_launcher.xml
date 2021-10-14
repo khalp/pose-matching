@@ -6,20 +6,32 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/welcome_text1"
+        android:id="@+id/welcome_text2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/welcome_string1"
+        android:text="@string/spanned_welcome_string2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageView
+        android:id="@+id/point_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_span"
-        android:contentDescription="@string/ic_span_description"
+        android:src="@drawable/ic_point"
+        android:contentDescription="@string/ic_point_description"
+        android:rotationY="180"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <ImageView
+        android:id="@+id/carry_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_carry"
+        android:contentDescription="@string/ic_carry_description"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 

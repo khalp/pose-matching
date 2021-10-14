@@ -3,19 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_dual_screen"
-    app:startDestination="@id/welcomeFragment2">
+    app:startDestination="@id/gameLauncherFragment">
 
     <fragment
-        android:id="@+id/welcomeFragment2"
-        android:name="com.microsoft.device.display.samples.posematching.fragments.WelcomeFragment2"
-        android:label="WelcomeFragment2" >
+        android:id="@+id/gameLauncherFragment"
+        android:name="com.microsoft.device.display.samples.posematching.fragments.GameLauncherFragment"
+        android:label="GameLauncherFragment"
+        tools:layout="@layout/fragment_game_launcher" >
         <action
-            android:id="@+id/action_welcomeFragment2_to_cameraFragment"
+            android:id="@+id/action_gameLauncherFragment_to_cameraFragment"
             app:destination="@id/cameraFragment" />
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
         android:name="com.microsoft.device.display.samples.posematching.fragments.CameraFragment"
         android:label="fragment_camera"
-        tools:layout="@layout/fragment_camera" />
+        tools:layout="@layout/fragment_camera" >
+        <action
+            android:id="@+id/action_cameraFragment_to_gameLauncherFragment"
+            app:destination="@id/gameLauncherFragment" />
+    </fragment>
 </navigation>

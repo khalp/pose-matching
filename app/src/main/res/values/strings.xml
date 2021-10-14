@@ -24,4 +24,14 @@
     <string name="right">right</string>
     <string name="score">Score: %1$s</string>
     <string name="unable">unable to calculate</string>
+    <string name="game_paused">Game Paused</string>
+    <string name="launch_game">I\'m ready!</string>
+    <string name="restart">Quit and go home</string>
+    <string name="ic_span_description">Stick figure with outstretched arms</string>
+    <string name="ic_point_description">Stick figure pointing to the side</string>
+    <string name="ic_carry_description">Stick figure carrying a circle that reads Let\'s Play</string>
+    <string name="ic_sit_description">Stick figure sitting on the ground and pointing upwards</string>
+    <string name="reference_image">Reference image</string>
+    <string name="pick_reference_image">Pick Reference Image</string>
+    <string name="default_references_button_text">Choose Images For Me!</string>
 </resources>

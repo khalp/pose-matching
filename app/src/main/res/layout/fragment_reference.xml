@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.PoseTestFragment">
+    tools:context=".fragments.ReferenceFragment">
 
     <ImageView
         android:id="@+id/reference_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="Reference image"
+        android:contentDescription="@string/reference_image"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,8 +31,17 @@
         android:id="@+id/pick_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pick Reference Image"
+        android:text="@string/pick_reference_image"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/default_references_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_references_button_text"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
