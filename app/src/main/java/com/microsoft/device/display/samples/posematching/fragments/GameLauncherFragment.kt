@@ -30,6 +30,7 @@ class GameLauncherFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_game_launcher, container, false)
 
         welcomeText = view.findViewById(R.id.welcome_text2)
+        welcomeText.textSize = 50f
         pointIcon = view.findViewById(R.id.point_icon)
         carryIcon = view.findViewById(R.id.carry_icon)
 
