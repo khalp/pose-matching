@@ -9,6 +9,7 @@ import com.google.mlkit.vision.pose.PoseDetection
 import com.google.mlkit.vision.pose.PoseDetector
 import com.google.mlkit.vision.pose.defaults.PoseDetectorOptions
 import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay
+import com.microsoft.device.display.samples.posematching.utils.MatchingStats
 import com.microsoft.device.display.samples.posematching.utils.PoseGraphic
 import com.microsoft.device.display.samples.posematching.utils.comparePoses
 
@@ -21,8 +22,7 @@ class PoseViewModel : ViewModel() {
     private var skipShoulders: Boolean = false
     private var skipKnees: Boolean = false
     private var skipHips: Boolean = false
-    var onSuccess: () -> Unit = {}
-    var onFail: () -> Unit = {}
+    var displayStats: (MatchingStats) -> Unit = {}
 
     init {
         val options = PoseDetectorOptions.Builder()
@@ -56,6 +56,7 @@ class PoseViewModel : ViewModel() {
             }
     }
 
+    // REVISIT: reference image is automatically analyzed/calculated now, no need to do it twice
     fun analyzeAndCompareImages(
         graphicOverlay: GraphicOverlay,
         referenceImage: InputImage,
@@ -88,7 +89,7 @@ class PoseViewModel : ViewModel() {
             return
 
         drawPoses(graphicOverlay, userPose!!)
-        if (comparePoses(
+        val stats = comparePoses(
                 skipElbows,
                 skipShoulders,
                 skipHips,
@@ -96,11 +97,7 @@ class PoseViewModel : ViewModel() {
                 referencePose!!,
                 userPose!!
             )
-        ) {
-            onMatchSuccess()
-        } else {
-            onMatchFail()
-        }
+        displayStats(stats)
     }
 
     private fun drawPoses(graphicOverlay: GraphicOverlay, pose: Pose) {
@@ -118,16 +115,6 @@ class PoseViewModel : ViewModel() {
         )
 
         graphicOverlay.invalidate()
-    }
-
-    private fun onMatchSuccess() {
-        Log.d("PoseTest", "Poses match!")
-        onSuccess()
-    }
-
-    private fun onMatchFail() {
-        Log.d("PoseTest", "Poses don't match, try again :(")
-        onFail()
     }
 }
 
