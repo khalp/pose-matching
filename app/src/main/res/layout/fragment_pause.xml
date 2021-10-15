@@ -6,12 +6,33 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/paused"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/game_paused"
         android:textSize="50sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/current_score"
+        android:textSize="40sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/score_value"
+        app:layout_constraintTop_toBottomOf="@id/paused"/>
+
+    <TextView
+        android:id="@+id/score_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="40sp"
+        app:layout_constraintStart_toEndOf="@id/score"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/paused"/>
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/quit_button"

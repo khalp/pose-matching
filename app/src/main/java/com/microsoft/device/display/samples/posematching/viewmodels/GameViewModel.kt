@@ -44,6 +44,11 @@ class GameViewModel : ViewModel() {
         return (_score.value ?: 0f) / (numImages.value?.toFloat() ?: 1f)
     }
 
+    fun calculateCurrentScore(numLeft: Int): Float {
+        val numCompleted = numImages.value?.let { it - numLeft } ?: return 0f
+        return score.value?.let { it / numCompleted } ?: 0f
+    }
+
     fun addScore(newScore: Float) {
         _score.value = (_score.value ?: 0f) + newScore
     }

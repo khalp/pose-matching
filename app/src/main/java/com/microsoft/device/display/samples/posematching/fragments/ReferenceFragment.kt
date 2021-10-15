@@ -105,7 +105,11 @@ class ReferenceFragment : Fragment() {
             } else {
                 pickImageButton.setText(R.string.pick_reference_image)
             }
-            val text = "Number of current reference images: ${referenceViewModel.referencesInList}"
+            val text = if (referenceViewModel.referencesInList == 0) {
+                getString(R.string.pick_reference_image)
+            } else {
+                "Number of current reference images: ${referenceViewModel.referencesInList}"
+            }
             referenceText.text = text
         })
 
