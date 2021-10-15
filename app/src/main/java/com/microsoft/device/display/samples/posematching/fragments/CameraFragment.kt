@@ -132,8 +132,7 @@ class CameraFragment : Fragment() {
             if (gameState == Defines.GameState.FINISHED) {
                 view.findNavController()
                     .navigate(CameraFragmentDirections.actionCameraFragmentToGameFinishedFragment2())
-            }
-            else if (gameState != Defines.GameState.RUNNING) {
+            } else if (gameState != Defines.GameState.RUNNING) {
                 view.findNavController()
                     .navigate(CameraFragmentDirections.actionCameraFragmentToGameLauncherFragment())
             }
@@ -202,8 +201,8 @@ class CameraFragment : Fragment() {
                 }
 
                 dialog.setContentView(R.layout.dialog_score)
-
-                dialog.findViewById<TextView>(R.id.dialog_text).text = msg
+                dialog.findViewById<TextView>(R.id.dialog_text).text =
+                    getString(R.string.score, msg)
                 dialog.findViewById<MaterialButton>(R.id.dialog_button).setOnClickListener {
                     dialog.cancel()
                 }
