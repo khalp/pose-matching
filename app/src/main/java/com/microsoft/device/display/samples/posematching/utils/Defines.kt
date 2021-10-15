@@ -7,6 +7,6 @@ object Defines {
     const val DEFAULT_TOOLBAR_OFFSET = 18
 
     enum class GameState {
-        STOPPED, PAUSED, RUNNING
+        FINISHED, STOPPED, PAUSED, RUNNING
     }
 }

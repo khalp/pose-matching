@@ -6,6 +6,10 @@ import androidx.lifecycle.ViewModel
 import com.microsoft.device.display.samples.posematching.utils.Defines
 
 class GameViewModel : ViewModel() {
+    private val _score = MutableLiveData(0f)
+    val score: LiveData<Float>
+        get() = _score
+
     private val _gameState = MutableLiveData(Defines.GameState.STOPPED)
     val gameState: LiveData<Defines.GameState>
         get() = _gameState
@@ -20,7 +24,19 @@ class GameViewModel : ViewModel() {
         _gameState.value = Defines.GameState.PAUSED
     }
 
-    fun finishGame() {
+    fun stopGame() {
         _gameState.value = Defines.GameState.STOPPED
+    }
+
+    fun finishGame() {
+        _gameState.value = Defines.GameState.FINISHED
+    }
+
+    fun clearScore() {
+        _score.value = 0f
+    }
+
+    fun addScore(newScore: Float) {
+        _score.value = (_score.value ?: 0f) + newScore
     }
 }

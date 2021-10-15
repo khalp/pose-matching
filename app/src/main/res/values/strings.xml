@@ -34,4 +34,8 @@
     <string name="reference_image">Reference image</string>
     <string name="pick_reference_image">Pick Reference Image</string>
     <string name="default_references_button_text">Choose Images For Me!</string>
+    <string name="add_reference_image">Add another reference image</string>
+    <string name="play_again">Play Again</string>
+    <string name="thanks_for_playing">Thanks for playing! Click below to play again!</string>
+    <string name="congratulations">Congratulations, you\'re a pose master! Your score is</string>
 </resources>

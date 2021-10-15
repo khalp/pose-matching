@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.platform.ComposeView
@@ -20,6 +20,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.mlkit.vision.common.InputImage
 import com.microsoft.device.display.samples.posematching.R
 import com.microsoft.device.display.samples.posematching.ui.view.Settings
+import com.microsoft.device.display.samples.posematching.utils.Defines
 import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay
 import com.microsoft.device.display.samples.posematching.viewmodels.GameViewModel
 import com.microsoft.device.display.samples.posematching.viewmodels.PoseViewModel
@@ -40,6 +41,7 @@ class ReferenceFragment : Fragment() {
     private lateinit var graphicOverlay: GraphicOverlay
     private lateinit var pickImageButton: MaterialButton
     private lateinit var defaultReferencesButton: MaterialButton
+    private lateinit var referenceText: TextView
 
     @ExperimentalFoundationApi
     override fun onCreateView(
@@ -53,52 +55,7 @@ class ReferenceFragment : Fragment() {
         graphicOverlay = view.findViewById(R.id.reference_graphic_overlay)
         pickImageButton = view.findViewById(R.id.pick_image_button)
         defaultReferencesButton = view.findViewById(R.id.default_references_button)
-
-        initializeButtons()
-        initializeObservers(view)
-
-        return view
-    }
-
-    @ExperimentalFoundationApi
-    private fun initializeButtons() {
-        pickImageButton.setOnClickListener {
-            openGallery()
-        }
-
-        defaultReferencesButton.setOnClickListener {
-
-        }
-    }
-
-    @ExperimentalFoundationApi
-    private fun initializeObservers(view: View) {
-        referenceViewModel.referenceImage.observe(viewLifecycleOwner, { uri ->
-            if (uri != null) {
-                referenceImage.setImageURI(uri)
-
-                val img = InputImage.fromFilePath(requireContext(), uri)
-                poseViewModel.initializeGraphicOverlay(graphicOverlay, img, false)
-                poseViewModel.analyzeImage(graphicOverlay, img)
-            } else {
-                Toast.makeText(requireContext(), "Failed to load image!", Toast.LENGTH_SHORT).show()
-            }
-        })
-
-        // Game can only supports dual screen mode, pause game or quit if it is switched to single screen
-        gameViewModel.isDualScreen.observe(viewLifecycleOwner, { isDualScreen ->
-            if (!isDualScreen) {
-                if (referenceViewModel.isReferenceListEmpty) {
-                    gameViewModel.finishGame()
-                    view.findNavController()
-                        .navigate(ReferenceFragmentDirections.actionReferenceFragmentToWelcomeFragment1())
-                } else {
-                    gameViewModel.pauseGame()
-                    view.findNavController()
-                        .navigate(ReferenceFragmentDirections.actionReferenceFragmentToPauseFragment())
-                }
-            }
-        })
+        referenceText = view.findViewById(R.id.reference_text)
 
         view.findViewById<ComposeView>(R.id.settings_drawer).setContent {
             Settings(
@@ -114,6 +71,63 @@ class ReferenceFragment : Fragment() {
                 { referenceViewModel.setCheckKnees(it) },
             )
         }
+
+        initializeButtons()
+        initializeObservers(view)
+
+        return view
+    }
+
+    @ExperimentalFoundationApi
+    private fun initializeButtons() {
+        pickImageButton.setOnClickListener {
+            openGallery()
+        }
+
+        defaultReferencesButton.setOnClickListener {
+            // TODO: add functionality here
+        }
+    }
+
+    @ExperimentalFoundationApi
+    private fun initializeObservers(view: View) {
+        referenceViewModel.referenceImage.observe(viewLifecycleOwner, { uri ->
+            if (uri != null) {
+                referenceImage.setImageURI(uri)
+
+                val img = InputImage.fromFilePath(requireContext(), uri)
+                poseViewModel.initializeGraphicOverlay(graphicOverlay, img, false)
+                poseViewModel.analyzeImage(graphicOverlay, img)
+
+                pickImageButton.setText(R.string.add_reference_image)
+            } else {
+                pickImageButton.setText(R.string.pick_reference_image)
+            }
+            val text = "Number of current reference images: ${referenceViewModel.referencesInList}"
+            referenceText.text = text
+        })
+
+        // Game can only supports dual screen mode, pause game or quit if it is switched to single screen
+        gameViewModel.isDualScreen.observe(viewLifecycleOwner, { isDualScreen ->
+            if (!isDualScreen) {
+                if (referenceViewModel.referencesInList == 0) {
+                    gameViewModel.stopGame()
+                    view.findNavController()
+                        .navigate(ReferenceFragmentDirections.actionReferenceFragmentToWelcomeFragment1())
+                } else {
+                    gameViewModel.pauseGame()
+                    view.findNavController()
+                        .navigate(ReferenceFragmentDirections.actionReferenceFragmentToPauseFragment())
+                }
+            }
+        })
+
+        gameViewModel.gameState.observe(viewLifecycleOwner, { gameState ->
+            if (gameState == Defines.GameState.FINISHED) {
+                view.findNavController()
+                    .navigate(ReferenceFragmentDirections.actionReferenceFragmentToGameFinishedFragment1())
+            }
+        })
     }
 
     /**
@@ -131,7 +145,6 @@ class ReferenceFragment : Fragment() {
             if (it.resultCode == Activity.RESULT_OK) {
                 it.data?.data?.let { imageUri ->
                     referenceViewModel.pushImage(imageUri)
-                    referenceViewModel.peekImage()
                 }
             }
         }
