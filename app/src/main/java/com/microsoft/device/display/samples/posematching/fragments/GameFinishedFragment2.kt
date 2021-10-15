@@ -24,8 +24,8 @@ class GameFinishedFragment2 : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_game_finished2, container, false)
 
-        view.findViewById<MaterialTextView>(R.id.score).text =
-            DecimalFormat("#.#").format(gameViewModel.calculateOverallScore())
+        val scoreString = "${getString(R.string.congratulations)} ${DecimalFormat("#.#").format(gameViewModel.calculateOverallScore())}"
+        view.findViewById<MaterialTextView>(R.id.congrats).text = scoreString
 
         initializeObservers(view)
 

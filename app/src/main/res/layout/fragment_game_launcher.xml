@@ -12,9 +12,10 @@
         android:text="@string/spanned_welcome_string2"
         android:textAlignment="center"
         android:textSize="50sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textAlignment="center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <ImageView
         android:id="@+id/point_icon"

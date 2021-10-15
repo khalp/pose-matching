@@ -118,9 +118,9 @@ class ReferenceFragment : Fragment() {
                 pickImageButton.setText(R.string.pick_reference_image)
             }
             val text = if (referenceViewModel.referencesInList == 0) {
-                getString(R.string.pick_reference_image)
+                ""
             } else {
-                "Number of current reference images: ${referenceViewModel.referencesInList}"
+                getString(R.string.number_reference_images) + " ${referenceViewModel.referencesInList}"
             }
             referenceText.text = text
         })
@@ -144,6 +144,13 @@ class ReferenceFragment : Fragment() {
             if (gameState == Defines.GameState.FINISHED) {
                 view.findNavController()
                     .navigate(ReferenceFragmentDirections.actionReferenceFragmentToGameFinishedFragment1())
+            }
+            if (gameState == Defines.GameState.RUNNING) {
+                pickImageButton.visibility = View.INVISIBLE
+                defaultReferencesButton.visibility = View.INVISIBLE
+            } else {
+                pickImageButton.visibility = View.VISIBLE
+                defaultReferencesButton.visibility = View.VISIBLE
             }
         })
     }

@@ -7,8 +7,8 @@
     <string name="permissions_not_granted">Permissions not granted by the user</string>
     <string name="welcome_string1">Welcome! Span to start the game</string>
     <string name="spanned_welcome_string1">Welcome! Now that you spanned you can play the game and stuff</string>
-    <string name="spanned_welcome_string2">Welcome! Now that you spanned you can play the game and stuff</string>
-    <string name="reference_welcome_string2">Choose a reference image to begin the game!</string>
+    <string name="spanned_welcome_string2">Choose a reference image to begin!</string>
+    <string name="reference_welcome_string2">Click below to start playing!</string>
     <string name="start_game">Start Game</string>
     <string name="poses_match">Poses match, great job!</string>
     <string name="poses_dont_match">Poses don\'t match, try again :)</string>
@@ -37,7 +37,8 @@
     <string name="add_reference_image">Add another reference image</string>
     <string name="play_again">Play Again</string>
     <string name="thanks_for_playing">Thanks for playing! Click below to play again!</string>
-    <string name="congratulations">Congratulations, you\'re a pose master! Your score is</string>
+    <string name="congratulations">Congratulations, you\'re a pose master!\nYour score is</string>
     <string name="current_score">Current score:</string>
     <string name="next_image">Continue</string>
+    <string name="number_reference_images">Number of reference images:</string>
 </resources>
