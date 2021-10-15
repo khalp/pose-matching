@@ -82,7 +82,7 @@ fun Settings(
             content = {
                 IconButton(
                     modifier = Modifier
-                        .padding(start = 20.dp, top = 20.dp)
+                        .padding(start = 10.dp, top = 5.dp)
                         .background(MaterialTheme.colors.surface, RoundedCornerShape(percent = 15)),
                     onClick = { scope.launch { drawerState.open() } },
                 ) {

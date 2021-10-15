@@ -30,7 +30,6 @@ class GameLauncherFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_game_launcher, container, false)
 
         welcomeText = view.findViewById(R.id.welcome_text2)
-        welcomeText.textSize = 50f
         pointIcon = view.findViewById(R.id.point_icon)
         carryIcon = view.findViewById(R.id.carry_icon)
 
@@ -44,6 +43,7 @@ class GameLauncherFragment : Fragment() {
         carryIcon.setOnClickListener {
             if (referenceViewModel.referenceImage.value != null) {
                 gameViewModel.startGame()
+                gameViewModel.setNumImages(referenceViewModel.referencesInList)
                 // transition to next screen
                 view.findNavController()
                     .navigate(GameLauncherFragmentDirections.actionGameLauncherFragmentToCameraFragment())

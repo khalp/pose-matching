@@ -105,8 +105,9 @@ class CameraFragment : Fragment() {
                     { id: Int, sArg: String, fArg: Float -> getString(id, sArg, fArg) },
                 )
             )
-            val score = stats.calculateOverallScore()
-            val msg = score?.let { DecimalFormat("#.##").format(it) } ?: getString(R.string.unable)
+            val score = stats.calculateOverallScore() ?: 0f
+            gameViewModel.addScore(score)
+            val msg = DecimalFormat("#.#").format(score)
             showScoreDialog(msg)
         }
 

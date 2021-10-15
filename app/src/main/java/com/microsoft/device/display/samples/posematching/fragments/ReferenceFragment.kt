@@ -12,6 +12,8 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.unit.dp
+import androidx.core.view.marginStart
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -103,7 +105,11 @@ class ReferenceFragment : Fragment() {
             } else {
                 pickImageButton.setText(R.string.pick_reference_image)
             }
-            val text = "Number of current reference images: ${referenceViewModel.referencesInList}"
+            val text = if (referenceViewModel.referencesInList == 0) {
+                getString(R.string.pick_reference_image)
+            } else {
+                "Number of current reference images: ${referenceViewModel.referencesInList}"
+            }
             referenceText.text = text
         })
 

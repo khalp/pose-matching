@@ -10,6 +10,10 @@ class GameViewModel : ViewModel() {
     val score: LiveData<Float>
         get() = _score
 
+    private val _numImages = MutableLiveData(0)
+    val numImages: LiveData<Int>
+        get() = _numImages
+
     private val _gameState = MutableLiveData(Defines.GameState.STOPPED)
     val gameState: LiveData<Defines.GameState>
         get() = _gameState
@@ -36,7 +40,20 @@ class GameViewModel : ViewModel() {
         _score.value = 0f
     }
 
+    fun calculateOverallScore(): Float {
+        return (_score.value ?: 0f) / (numImages.value?.toFloat() ?: 1f)
+    }
+
+    fun calculateCurrentScore(numLeft: Int): Float {
+        val numCompleted = numImages.value?.let { it - numLeft } ?: return 0f
+        return score.value?.let { it / numCompleted } ?: 0f
+    }
+
     fun addScore(newScore: Float) {
         _score.value = (_score.value ?: 0f) + newScore
+    }
+
+    fun setNumImages(num: Int) {
+        _numImages.value = num
     }
 }
