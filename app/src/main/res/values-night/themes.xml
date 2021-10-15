@@ -15,5 +15,6 @@
         <item name="colorSurface">@color/dark_gray</item>
         <item name="android:colorBackground">@color/dark_gray</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:fontFamily">@font/akaya_kanadaka_regular</item>
     </style>
 </resources>
