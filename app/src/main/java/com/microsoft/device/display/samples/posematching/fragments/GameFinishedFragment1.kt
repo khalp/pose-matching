@@ -38,6 +38,7 @@ class GameFinishedFragment1 : Fragment() {
         restartGameButton.setOnClickListener {
             referenceViewModel.clearImages()
             gameViewModel.pauseGame()
+            gameViewModel.clearScore()
             view.findNavController().navigate(GameFinishedFragment1Directions.actionGameFinishedFragment1ToWelcomeFragment1())
         }
     }

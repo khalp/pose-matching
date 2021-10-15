@@ -43,6 +43,7 @@ class GameLauncherFragment : Fragment() {
         carryIcon.setOnClickListener {
             if (referenceViewModel.referenceImage.value != null) {
                 gameViewModel.startGame()
+                gameViewModel.setNumImages(referenceViewModel.referencesInList)
                 // transition to next screen
                 view.findNavController()
                     .navigate(GameLauncherFragmentDirections.actionGameLauncherFragmentToCameraFragment())

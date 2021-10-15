@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import com.google.android.material.textview.MaterialTextView
 import com.microsoft.device.display.samples.posematching.R
 import com.microsoft.device.display.samples.posematching.utils.Defines
 import com.microsoft.device.display.samples.posematching.viewmodels.GameViewModel
+import java.text.DecimalFormat
 
 class GameFinishedFragment2 : Fragment() {
 
@@ -22,6 +24,9 @@ class GameFinishedFragment2 : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_game_finished2, container, false)
 
+        view.findViewById<MaterialTextView>(R.id.score).text =
+            DecimalFormat("#.#").format(gameViewModel.calculateOverallScore())
+
         initializeObservers(view)
 
         return view
@@ -30,7 +35,8 @@ class GameFinishedFragment2 : Fragment() {
     private fun initializeObservers(view: View) {
         gameViewModel.gameState.observe(viewLifecycleOwner, { gameState ->
             if (gameState == Defines.GameState.PAUSED) {
-                view.findNavController().navigate(GameFinishedFragment2Directions.actionGameFinishedFragment2ToGameLauncherFragment())
+                view.findNavController()
+                    .navigate(GameFinishedFragment2Directions.actionGameFinishedFragment2ToGameLauncherFragment())
             }
         })
     }
