@@ -8,6 +8,18 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
+                  <entry key="gameFinishedFragment1">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="732" />
+                            <option name="y" value="36" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="pauseFragment">
                     <value>
                       <LayoutPositions>
@@ -46,6 +58,11 @@
                         <option name="myPositions">
                           <map>
                             <entry key="action_referenceFragment_to_pauseFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_referenceFragment_to_welcomeFragment1">
                               <value>
                                 <LayoutPositions />
                               </value>

@@ -23,16 +23,16 @@
             android:id="@+id/action_cameraFragment_to_gameLauncherFragment"
             app:destination="@id/gameLauncherFragment" />
         <action
-            android:id="@+id/action_cameraFragment_to_gameFinishedFragment"
-            app:destination="@id/gameFinishedFragment" />
+            android:id="@+id/action_cameraFragment_to_gameFinishedFragment2"
+            app:destination="@id/gameFinishedFragment2" />
     </fragment>
     <fragment
-        android:id="@+id/gameFinishedFragment"
-        android:name="com.microsoft.device.display.samples.posematching.fragments.GameFinishedFragment"
-        android:label="GameFinishedFragment"
-        tools:layout="@layout/fragment_game_finished" >
+        android:id="@+id/gameFinishedFragment2"
+        android:name="com.microsoft.device.display.samples.posematching.fragments.GameFinishedFragment2"
+        android:label="GameFinishedFragment2"
+        tools:layout="@layout/fragment_game_finished2" >
         <action
-            android:id="@+id/action_gameFinishedFragment_to_gameLauncherFragment"
+            android:id="@+id/action_gameFinishedFragment2_to_gameLauncherFragment"
             app:destination="@id/gameLauncherFragment" />
     </fragment>
 </navigation>

@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.platform.ComposeView
@@ -58,6 +57,21 @@ class ReferenceFragment : Fragment() {
         defaultReferencesButton = view.findViewById(R.id.default_references_button)
         referenceText = view.findViewById(R.id.reference_text)
 
+        view.findViewById<ComposeView>(R.id.settings_drawer).setContent {
+            Settings(
+                referenceViewModel.timerLength,
+                { referenceViewModel.setTimerLength(it) },
+                referenceViewModel.checkElbows,
+                { referenceViewModel.setCheckElbows(it) },
+                referenceViewModel.checkShoulders,
+                { referenceViewModel.setCheckShoulders(it) },
+                referenceViewModel.checkHips,
+                { referenceViewModel.setCheckHips(it) },
+                referenceViewModel.checkKnees,
+                { referenceViewModel.setCheckKnees(it) },
+            )
+        }
+
         initializeButtons()
         initializeObservers(view)
 
@@ -71,7 +85,7 @@ class ReferenceFragment : Fragment() {
         }
 
         defaultReferencesButton.setOnClickListener {
-
+            // TODO: add functionality here
         }
     }
 
@@ -97,7 +111,7 @@ class ReferenceFragment : Fragment() {
         gameViewModel.isDualScreen.observe(viewLifecycleOwner, { isDualScreen ->
             if (!isDualScreen) {
                 if (referenceViewModel.referencesInList == 0) {
-                    gameViewModel.finishGame()
+                    gameViewModel.stopGame()
                     view.findNavController()
                         .navigate(ReferenceFragmentDirections.actionReferenceFragmentToWelcomeFragment1())
                 } else {
@@ -108,20 +122,12 @@ class ReferenceFragment : Fragment() {
             }
         })
 
-        view.findViewById<ComposeView>(R.id.settings_drawer).setContent {
-            Settings(
-                referenceViewModel.timerLength,
-                { referenceViewModel.setTimerLength(it) },
-                referenceViewModel.checkElbows,
-                { referenceViewModel.setCheckElbows(it) },
-                referenceViewModel.checkShoulders,
-                { referenceViewModel.setCheckShoulders(it) },
-                referenceViewModel.checkHips,
-                { referenceViewModel.setCheckHips(it) },
-                referenceViewModel.checkKnees,
-                { referenceViewModel.setCheckKnees(it) },
-            )
-        }
+        gameViewModel.gameState.observe(viewLifecycleOwner, { gameState ->
+            if (gameState == Defines.GameState.FINISHED) {
+                view.findNavController()
+                    .navigate(ReferenceFragmentDirections.actionReferenceFragmentToGameFinishedFragment1())
+            }
+        })
     }
 
     /**

@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_referenceFragment_to_welcomeFragment1"
             app:destination="@id/welcomeFragment1" />
+        <action
+            android:id="@+id/action_referenceFragment_to_gameFinishedFragment1"
+            app:destination="@id/gameFinishedFragment1" />
     </fragment>
     <fragment
         android:id="@+id/pauseFragment"
@@ -37,5 +40,14 @@
         <action
             android:id="@+id/action_pauseFragment_to_referenceFragment"
             app:destination="@id/referenceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameFinishedFragment1"
+        android:name="com.microsoft.device.display.samples.posematching.fragments.GameFinishedFragment1"
+        android:label="GameFinishedFragment1"
+        tools:layout="@layout/fragment_game_finished1">
+        <action
+            android:id="@+id/action_gameFinishedFragment1_to_welcomeFragment1"
+            app:destination="@id/welcomeFragment1" />
     </fragment>
 </navigation>

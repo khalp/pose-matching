@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
@@ -127,7 +128,11 @@ class CameraFragment : Fragment() {
 
     private fun initializeObservers(view: View) {
         gameViewModel.gameState.observe(viewLifecycleOwner, { gameState ->
-            if (gameState != Defines.GameState.RUNNING) {
+            if (gameState == Defines.GameState.FINISHED) {
+                view.findNavController()
+                    .navigate(CameraFragmentDirections.actionCameraFragmentToGameFinishedFragment2())
+            }
+            else if (gameState != Defines.GameState.RUNNING) {
                 view.findNavController()
                     .navigate(CameraFragmentDirections.actionCameraFragmentToGameLauncherFragment())
             }
@@ -163,7 +168,7 @@ class CameraFragment : Fragment() {
 
         referenceViewModel.referenceImage.observe(viewLifecycleOwner, { image ->
             if (image == null) {
-                view.findNavController().navigate(CameraFragmentDirections.actionCameraFragmentToGameFinishedFragment())
+                gameViewModel.finishGame()
             }
         })
     }
