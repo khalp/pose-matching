@@ -1,7 +1,9 @@
 package com.microsoft.device.display.samples.posematching.fragments
 
 import android.app.Activity
+import android.content.ContentResolver
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -23,6 +25,7 @@ import com.google.mlkit.vision.common.InputImage
 import com.microsoft.device.display.samples.posematching.R
 import com.microsoft.device.display.samples.posematching.ui.view.Settings
 import com.microsoft.device.display.samples.posematching.utils.Defines
+import com.microsoft.device.display.samples.posematching.utils.Defines.DEFAULT_REFERENCES_PER_GAME
 import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay
 import com.microsoft.device.display.samples.posematching.viewmodels.GameViewModel
 import com.microsoft.device.display.samples.posematching.viewmodels.PoseViewModel
@@ -87,7 +90,16 @@ class ReferenceFragment : Fragment() {
         }
 
         defaultReferencesButton.setOnClickListener {
-            // TODO: add functionality here
+            referenceViewModel.clearImages()
+
+            val referenceList = listOf(R.drawable.pose1, R.drawable.pose2, R.drawable.pose3, R.drawable.pose4,
+                                R.drawable.pose5, R.drawable.pose6, R.drawable.pose7, R.drawable.pose8,
+                                R.drawable.pose9, R.drawable.pose10)
+
+            val uniqueNumbers = (referenceList.indices).shuffled().take(DEFAULT_REFERENCES_PER_GAME)
+            for (index in uniqueNumbers) {
+                referenceViewModel.pushImage(getUriFromDrawable(referenceList[index]))
+            }
         }
     }
 
@@ -106,9 +118,9 @@ class ReferenceFragment : Fragment() {
                 pickImageButton.setText(R.string.pick_reference_image)
             }
             val text = if (referenceViewModel.referencesInList == 0) {
-                getString(R.string.pick_reference_image)
+                ""
             } else {
-                "Number of current reference images: ${referenceViewModel.referencesInList}"
+                getString(R.string.number_reference_images) + " ${referenceViewModel.referencesInList}"
             }
             referenceText.text = text
         })
@@ -133,6 +145,13 @@ class ReferenceFragment : Fragment() {
                 view.findNavController()
                     .navigate(ReferenceFragmentDirections.actionReferenceFragmentToGameFinishedFragment1())
             }
+            if (gameState == Defines.GameState.RUNNING) {
+                pickImageButton.visibility = View.INVISIBLE
+                defaultReferencesButton.visibility = View.INVISIBLE
+            } else {
+                pickImageButton.visibility = View.VISIBLE
+                defaultReferencesButton.visibility = View.VISIBLE
+            }
         })
     }
 
@@ -154,6 +173,14 @@ class ReferenceFragment : Fragment() {
                 }
             }
         }
+
+    private fun getUriFromDrawable(id: Int): Uri {
+        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
+                + "://${resources.getResourcePackageName(id)}"
+                + "/${resources.getResourceTypeName(id)}"
+                + "/${resources.getResourceEntryName(id)}"
+        )
+    }
 
     companion object {
         @JvmStatic
