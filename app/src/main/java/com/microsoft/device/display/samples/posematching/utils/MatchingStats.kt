@@ -28,7 +28,7 @@ data class MatchingStats(
         }
 
         // if all joints were skipped or out of frame, score is 0
-        return if ( total > 0f)
+        return if (total > 0f)
             total / count
         else
             null
@@ -48,8 +48,8 @@ data class MatchingStats(
     }
 
     private fun jointDiff(diff: Pair<Float?, Float?>): Pair<Float?, Float?> {
-        val first = diff.first?.let {percentFromDiff(it)}
-        val second = diff.second?.let {percentFromDiff(it)}
+        val first = diff.first?.let { percentFromDiff(it) }
+        val second = diff.second?.let { percentFromDiff(it) }
 
         return Pair(first, second)
     }
@@ -88,21 +88,25 @@ data class MatchingStats(
         getStringResWithStringFloatArgs: (Int, String, Float) -> String,
     ): String {
         val output = StringBuilder()
-        output.append(jointStringOneSide(
-            jointStringId,
-            jointDiff.first,
-            getStringRes,
-            getStringResWithStringArg,
-            getStringResWithStringFloatArgs
-        ))
+        output.append(
+            jointStringOneSide(
+                jointStringId,
+                jointDiff.first,
+                getStringRes,
+                getStringResWithStringArg,
+                getStringResWithStringFloatArgs
+            )
+        )
         output.append('\t')
-        output.append(jointStringOneSide(
-            jointStringId,
-            jointDiff.second,
-            getStringRes,
-            getStringResWithStringArg,
-            getStringResWithStringFloatArgs
-        ))
+        output.append(
+            jointStringOneSide(
+                jointStringId,
+                jointDiff.second,
+                getStringRes,
+                getStringResWithStringArg,
+                getStringResWithStringFloatArgs
+            )
+        )
         output.append('\n')
         return output.toString()
     }

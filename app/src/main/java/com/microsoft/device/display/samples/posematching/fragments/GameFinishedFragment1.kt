@@ -39,7 +39,8 @@ class GameFinishedFragment1 : Fragment() {
             referenceViewModel.clearImages()
             gameViewModel.pauseGame()
             gameViewModel.clearScore()
-            view.findNavController().navigate(GameFinishedFragment1Directions.actionGameFinishedFragment1ToWelcomeFragment1())
+            view.findNavController()
+                .navigate(GameFinishedFragment1Directions.actionGameFinishedFragment1ToWelcomeFragment1())
         }
     }
 

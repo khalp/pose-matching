@@ -10,8 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.microsoft.device.display.samples.posematching.R
-import com.microsoft.device.display.samples.posematching.viewmodels.ReferenceViewModel
 import com.microsoft.device.display.samples.posematching.viewmodels.GameViewModel
+import com.microsoft.device.display.samples.posematching.viewmodels.ReferenceViewModel
 
 class GameLauncherFragment : Fragment() {
 

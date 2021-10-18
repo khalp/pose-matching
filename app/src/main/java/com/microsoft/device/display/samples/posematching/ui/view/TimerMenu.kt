@@ -49,7 +49,11 @@ fun TimerMenu(seconds: LiveData<Int>, updateSeconds: (Int) -> Unit, modifier: Mo
             color = MaterialTheme.colors.primary,
             style = MaterialTheme.typography.h3
         )
-        Spacer(Modifier.fillMaxWidth().height(3.dp).background(MaterialTheme.colors.primary))
+        Spacer(
+            Modifier
+                .fillMaxWidth()
+                .height(3.dp)
+                .background(MaterialTheme.colors.primary))
         Spacer(Modifier.height(15.dp))
         AnimatedVisibility(
             modifier = Modifier.fillMaxWidth(),

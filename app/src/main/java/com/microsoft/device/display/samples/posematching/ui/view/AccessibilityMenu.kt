@@ -61,7 +61,11 @@ fun AccessibilityMenu(
             color = MaterialTheme.colors.primary,
             style = MaterialTheme.typography.h3
         )
-        Spacer(Modifier.fillMaxWidth().height(3.dp).background(MaterialTheme.colors.primary))
+        Spacer(
+            Modifier
+                .fillMaxWidth()
+                .height(3.dp)
+                .background(MaterialTheme.colors.primary))
         Spacer(Modifier.height(25.dp))
         AnimatedVisibility(
             modifier = Modifier.fillMaxWidth(),

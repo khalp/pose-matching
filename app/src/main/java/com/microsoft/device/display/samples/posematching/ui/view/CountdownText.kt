@@ -19,10 +19,12 @@ import com.microsoft.device.display.samples.posematching.ui.theme.PoseMatchingTh
 fun CountdownText(text: String) {
     PoseMatchingTheme {
         Box(
-            modifier = Modifier.background(
-                MaterialTheme.colors.surface.copy(0.7f),
-                RoundedCornerShape(percent = 15)
-            ).sizeIn(100.dp, 100.dp, 220.dp, 100.dp),
+            modifier = Modifier
+                .background(
+                    MaterialTheme.colors.surface.copy(0.7f),
+                    RoundedCornerShape(percent = 15)
+                )
+                .sizeIn(100.dp, 100.dp, 220.dp, 100.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(

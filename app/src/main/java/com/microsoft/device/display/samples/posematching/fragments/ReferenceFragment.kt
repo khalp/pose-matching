@@ -14,8 +14,6 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.unit.dp
-import androidx.core.view.marginStart
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -92,9 +90,11 @@ class ReferenceFragment : Fragment() {
         defaultReferencesButton.setOnClickListener {
             referenceViewModel.clearImages()
 
-            val referenceList = listOf(R.drawable.pose1, R.drawable.pose2, R.drawable.pose3, R.drawable.pose4,
-                                R.drawable.pose5, R.drawable.pose6, R.drawable.pose7, R.drawable.pose8,
-                                R.drawable.pose9, R.drawable.pose10)
+            val referenceList = listOf(
+                R.drawable.pose1, R.drawable.pose2, R.drawable.pose3, R.drawable.pose4,
+                R.drawable.pose5, R.drawable.pose6, R.drawable.pose7, R.drawable.pose8,
+                R.drawable.pose9, R.drawable.pose10
+            )
 
             val uniqueNumbers = (referenceList.indices).shuffled().take(DEFAULT_REFERENCES_PER_GAME)
             for (index in uniqueNumbers) {
@@ -175,10 +175,11 @@ class ReferenceFragment : Fragment() {
         }
 
     private fun getUriFromDrawable(id: Int): Uri {
-        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
-                + "://${resources.getResourcePackageName(id)}"
-                + "/${resources.getResourceTypeName(id)}"
-                + "/${resources.getResourceEntryName(id)}"
+        return Uri.parse(
+            ContentResolver.SCHEME_ANDROID_RESOURCE
+                    + "://${resources.getResourcePackageName(id)}"
+                    + "/${resources.getResourceTypeName(id)}"
+                    + "/${resources.getResourceEntryName(id)}"
         )
     }
 

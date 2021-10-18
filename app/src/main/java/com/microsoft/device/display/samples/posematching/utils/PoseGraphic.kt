@@ -4,9 +4,9 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import com.google.common.primitives.Ints
-import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay.Graphic
 import com.google.mlkit.vision.pose.Pose
 import com.google.mlkit.vision.pose.PoseLandmark
+import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay.Graphic
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min

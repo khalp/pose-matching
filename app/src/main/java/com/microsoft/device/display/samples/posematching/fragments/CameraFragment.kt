@@ -181,14 +181,6 @@ class CameraFragment : Fragment() {
         ).show()
     }
 
-    private fun showMessage(msg: String) {
-        Toast.makeText(
-            requireContext(),
-            msg,
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
     private fun showScoreDialog(msg: String) {
         activity?.let { activity ->
             scoreDialog = Dialog(activity)

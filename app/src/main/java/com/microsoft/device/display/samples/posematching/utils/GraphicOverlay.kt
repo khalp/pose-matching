@@ -5,10 +5,12 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.util.AttributeSet
 import android.view.View
-import java.util.ArrayList
 import com.google.common.base.Preconditions
+import com.microsoft.device.display.samples.posematching.utils.GraphicOverlay.Graphic
+import java.util.*
 
 
+// Reference: https://github.com/googlesamples/mlkit/blob/master/android/vision-quickstart/app/src/main/java/com/google/mlkit/vision/demo/GraphicOverlay.java
 /*
 * Copyright 2020 Google LLC. All rights reserved.
 *

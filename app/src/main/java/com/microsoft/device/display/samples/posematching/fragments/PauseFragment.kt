@@ -31,7 +31,8 @@ class PauseFragment : Fragment() {
 
         quitButton = view.findViewById(R.id.quit_button)
         val score = gameViewModel.calculateCurrentScore(referenceViewModel.referencesInList)
-        view.findViewById<MaterialTextView>(R.id.score_value).text = DecimalFormat("#.#").format(score)
+        view.findViewById<MaterialTextView>(R.id.score_value).text =
+            DecimalFormat("#.#").format(score)
 
         initializeButtons()
         initializeObservers(view)

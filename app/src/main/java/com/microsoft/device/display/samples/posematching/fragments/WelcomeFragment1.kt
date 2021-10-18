@@ -36,7 +36,8 @@ class WelcomeFragment1 : Fragment() {
         gameViewModel.gameState.observe(viewLifecycleOwner, { gameState ->
             if (gameState != Defines.GameState.STOPPED) {
                 // transition to next screen
-                view.findNavController().navigate(WelcomeFragment1Directions.actionWelcomeFragment1ToReferenceFragment())
+                view.findNavController()
+                    .navigate(WelcomeFragment1Directions.actionWelcomeFragment1ToReferenceFragment())
             }
         })
 

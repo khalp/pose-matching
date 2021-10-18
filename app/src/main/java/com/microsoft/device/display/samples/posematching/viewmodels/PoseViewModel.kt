@@ -18,10 +18,6 @@ class PoseViewModel : ViewModel() {
     private val poseDetector: PoseDetector
     private var referencePose: Pose? = null
     private var userPose: Pose? = null
-    private var skipElbows: Boolean = false
-    private var skipShoulders: Boolean = false
-    private var skipKnees: Boolean = false
-    private var skipHips: Boolean = false
     var displayStats: (MatchingStats) -> Unit = {}
 
     init {
