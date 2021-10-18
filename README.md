@@ -24,7 +24,7 @@ This app is intended to be used in [Dual Portrait](https://docs.microsoft.com/du
 
 ![Screenshot showing the end of the timer countdown](screenshots/timer_countdown.png)
 
-3. At the end of the countdown, the reference image and camera view are both analyzed with a pose-detecting library. This library generates two skeletons with landmarks representing various joints.
+3. At the end of the countdown, the reference image and camera view are both analyzed with a pose-detecting library, specifically [Google's ML Kit](https://developers.google.com/ml-kit/vision/pose-detection/android). This library generates two skeletons with landmarks representing various joints.
 4. The angles of the four main joints (elbows, shoulders, hips, and knees) are compared, and the angle differences are used to calculate a score out of 100.
 5. Depending on how many reference images were selected, the user can then continue on to the next image in the sequence or view their final score and start a new game session. If a sequence of images was used to play, the final score is calculated by taking the average of the scores.
 
@@ -59,7 +59,7 @@ One issue we thought of when coming up with our hack idea was the accessibility 
 
 If we had more time/resources to work on this project, here are some things we would work on next:
 
-- **Support for other layouts/orientations**: adding support for landscape and single-screen game play would gives users more flexibility when using the app
+- **Support for other layouts/orientations**: adding support for landscape and single-screen game play would give users more flexibility when using the app
 - **Increased accessibility**: even though we came up with a small improvement to accessibility, we think that the app could benefit from additional adaptations to be more inclusive
 - **Analyze live video**: the MLKit provides support for analyzing both photos and live video, so it would be interesting to add live video support to the app - maybe it could even be used for applications like learning dances or other complex movements
 - **Analyze drawings**: the MLKit also provides support for ink analysis, and inking is one of the highlighted experiences on the Surface Duo, so it would also be cool to have a game where users have to copy drawings
